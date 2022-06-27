@@ -508,12 +508,12 @@ local void check_match(start, match, length)
     if (memcmp((char*)window + match,
                 (char*)window + start, length) != 0) {
         fprintf(stderr,
-            " start %d, match %d, length %d\n",
+            " start %u, match %u, length %d\n",
             start, match, length);
         gzip_error ("invalid match");
     }
     if (verbose > 1) {
-        fprintf(stderr,"\\[%d,%d]", start-match, length);
+        fprintf (stderr, "\\[%u,%d]", start - match, length);
         do { putc(window[start++], stderr); } while (--length != 0);
     }
 }

@@ -136,7 +136,7 @@ void send_bits(value, length)
     int length; /* number of bits */
 {
 #ifdef DEBUG
-    Tracev((stderr," l %2d v %4x ", length, value));
+    Tracev ((stderr, " l %2d v %4x ", length, value + 0u));
     Assert(length > 0 && length <= 15, "invalid length");
     bits_sent += (off_t)length;
 #endif

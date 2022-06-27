@@ -319,7 +319,7 @@ local void set_file_type  (void);
 
 #else /* DEBUG */
 #  define send_code(c, tree) \
-     { if (verbose>1) fprintf(stderr,"\ncd %3d ",(c)); \
+     { if (verbose > 1) fprintf (stderr, "\ncd %3u ", (c) + 0u); \
        send_bits(tree[c].Code, tree[c].Len); }
 #endif
 
@@ -603,7 +603,7 @@ local void gen_codes (tree, max_code)
         tree[n].Code = bi_reverse(next_code[len]++, len);
 
         Tracec(tree != static_ltree, (stderr,"\nn %3d %c l %2d c %4x (%x) ",
-             n, (isgraph(n) ? n : ' '), len, tree[n].Code, next_code[len]-1));
+             n, (isgraph(n) ? n : ' '), len, tree[n].Code, next_code[len]-1u));
     }
 }
 
@@ -1003,7 +1003,7 @@ int ct_tally (dist, lc)
             out_length += (ulg)dyn_dtree[dcode].Freq*(5L+extra_dbits[dcode]);
         }
         out_length >>= 3;
-        Trace((stderr,"\nlast_lit %u, last_dist %u, in %ld, out ~%ld(%ld%%) ",
+        Trace((stderr,"\nlast_lit %u, last_dist %u, in %lu, out ~%lu(%lu%%) ",
                last_lit, last_dist, in_length, out_length,
                100L - out_length*100L/in_length));
         if (last_dist < last_lit/2 && out_length < in_length/2) return 1;
