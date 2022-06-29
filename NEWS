@@ -2,6 +2,12 @@ GNU gzip NEWS                                    -*- outline -*-
 
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
+** Bug fixes
+
+  'gzip -d' no longer fails to report invalid compressed data
+  that uses a dictionary distance outside the input window.
+  [bug present since the beginning]
+
 
 * Noteworthy changes in release 1.12 (2022-04-07) [stable]
 
