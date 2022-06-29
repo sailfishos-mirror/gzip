@@ -117,6 +117,7 @@
 
 #include <config.h>
 
+#include <stdbool.h>
 #include <stdlib.h>
 
 #include "tailor.h"
@@ -153,8 +154,9 @@ static int huft_free (struct huft *);
    "uch *slide;" and then malloc'ed in the latter case.  The definition
    must be in unzip.h, included above. */
 /* unsigned wp;             current position in slide */
+static bool fresh;
 #define wp outcnt
-#define flush_output(w) (wp=(w),flush_window())
+#define flush_output(w) (fresh = false, wp = (w), flush_window ())
 
 /* Tables for deflate from PKZIP's appnote.txt. */
 static unsigned border[] = {    /* Order of the bit length code lengths */
@@ -582,6 +584,8 @@ inflate_codes(struct huft *tl, struct huft *td, int bl, int bd)
       NEEDBITS(e)
       d = w - t->v.n - ((unsigned)b & mask_bits[e]);
       DUMPBITS(e)
+      if (fresh && w <= d)
+	return 1;
       Tracevv ((stderr, "\\[%u,%u]", w - d, n));
 
       /* do the copy */
@@ -964,6 +968,7 @@ inflate(void)
   wp = 0;
   bk = 0;
   bb = 0;
+  fresh = true;
 
 
   /* decompress until the last block */
