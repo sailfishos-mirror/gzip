@@ -235,7 +235,8 @@ do
       (*'
 '* | *'&'* | *'\'* | *'|'*)
           icolon=$(printf '%s\n' "$i:" |
-                     LC_ALL=C sed -e 's/[&\|]/\\&/g' -e '$!s/$/\\/');;
+                     LC_ALL=C sed -e 's/[&\|]/\\&/g' -e '$!s/$/\\/') ||
+             icolon='(unknown filename):';;
       (*) icolon="$i:";;
       esac
       sed_script="s|^|$icolon|"
