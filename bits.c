@@ -76,7 +76,7 @@
  * Local data used by the "bit string" routines.
  */
 
-local file_t zfile; /* output gzip file */
+static file_t zfile; /* output gzip file */
 
 #ifndef IBM_Z_DFLTCC
 static

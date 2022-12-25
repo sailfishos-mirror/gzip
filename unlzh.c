@@ -12,25 +12,24 @@
 
 /* decode.c */
 
-local unsigned  decode  (unsigned count, uch buffer[]);
-local void decode_start (void);
+static unsigned  decode (unsigned count, uch buffer[]);
+static void decode_start (void);
 
 /* huf.c */
-local void huf_decode_start (void);
-local unsigned decode_c     (void);
-local unsigned decode_p     (void);
-local void read_pt_len      (int nn, int nbit, int i_special);
-local void read_c_len       (void);
+static void huf_decode_start (void);
+static unsigned decode_c (void);
+static unsigned decode_p (void);
+static void read_pt_len (int nn, int nbit, int i_special);
+static void read_c_len (void);
 
 /* io.c */
-local void fillbuf      (int n);
-local unsigned getbits  (int n);
-local void init_getbits (void);
+static void fillbuf (int n);
+static unsigned getbits (int n);
+static void init_getbits (void);
 
 /* maketbl.c */
 
-local void make_table (int nchar, uch bitlen[],
-                       int tablebits, ush table[]);
+static void make_table (int nchar, uch bitlen[], int tablebits, ush table[]);
 
 
 #define DICBIT    13    /* 12(-lh4-) or 13(-lh5-) */
@@ -67,25 +66,25 @@ local void make_table (int nchar, uch bitlen[],
 #define TBIT 5  /* smallest integer such that (1U << TBIT) > NT */
 #define NPT (1 << TBIT)
 
-/* local ush left[2 * NC - 1]; */
-/* local ush right[2 * NC - 1]; */
+/* static ush left[2 * NC - 1]; */
+/* static ush right[2 * NC - 1]; */
 #define left  prev
 #define right head
 #if NC > (1<<(BITS-2))
     error cannot overlay left+right and prev
 #endif
 
-/* local uch c_len[NC]; */
+/* static uch c_len[NC]; */
 #define c_len outbuf
 #if NC > OUTBUFSIZ
     error cannot overlay c_len and outbuf
 #endif
 
-local uch pt_len[NPT];
-local unsigned blocksize;
-local ush pt_table[256];
+static uch pt_len[NPT];
+static unsigned blocksize;
+static ush pt_table[256];
 
-/* local ush c_table[4096]; */
+/* static ush c_table[4096]; */
 #define c_table d_buf
 #if (DIST_BUFSIZE-1) < 4095
     error cannot overlay c_table and d_buf
@@ -95,9 +94,9 @@ local ush pt_table[256];
         io.c -- input/output
 ***********************************************************/
 
-local ush       bitbuf;
-local unsigned  subbitbuf;
-local int       bitcount;
+static ush       bitbuf;
+static unsigned  subbitbuf;
+static int       bitcount;
 
 /* Shift bitbuf N bits left, read N bits.  */
 static void
@@ -122,7 +121,8 @@ getbits (int n)
     return x;
 }
 
-local void init_getbits()
+static void
+init_getbits ()
 {
     bitbuf = 0;  subbitbuf = 0;  bitcount = 0;
     fillbuf(BITBUFSIZ);
@@ -228,7 +228,8 @@ read_pt_len (int nn, int nbit, int i_special)
     }
 }
 
-local void read_c_len()
+static void
+read_c_len ()
 {
     int i, c, n;
     unsigned mask;
@@ -263,7 +264,8 @@ local void read_c_len()
     }
 }
 
-local unsigned decode_c()
+static unsigned
+decode_c ()
 {
     unsigned j, mask;
 
@@ -290,7 +292,8 @@ local unsigned decode_c()
     return j;
 }
 
-local unsigned decode_p()
+static unsigned
+decode_p ()
 {
     unsigned j, mask;
 
@@ -308,7 +311,8 @@ local unsigned decode_p()
     return j;
 }
 
-local void huf_decode_start()
+static void
+huf_decode_start ()
 {
     init_getbits();  blocksize = 0;
 }
@@ -317,10 +321,11 @@ local void huf_decode_start()
         decode.c
 ***********************************************************/
 
-local int j;    /* remaining bytes to copy */
-local int done; /* set at end of input */
+static int j;    /* remaining bytes to copy */
+static int done; /* set at end of input */
 
-local void decode_start()
+static void
+decode_start ()
 {
     huf_decode_start();
     j = 0;
@@ -340,7 +345,7 @@ decode (unsigned count, uch buffer[])
        before calling this function.
      */
 {
-    local unsigned i;
+    static unsigned i;
     unsigned r, c;
 
     r = 0;

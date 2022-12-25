@@ -176,7 +176,7 @@ long block_start;
  * negative when the window is moved backwards.
  */
 
-local unsigned ins_h;  /* hash index of string to be inserted */
+static unsigned ins_h;  /* hash index of string to be inserted */
 
 #define H_SHIFT  ((HASH_BITS+MIN_MATCH-1)/MIN_MATCH)
 /* Number of bits by which ins_h and del_h must be shifted at each
@@ -192,15 +192,15 @@ local unsigned ins_h;  /* hash index of string to be inserted */
 
       unsigned near strstart;      /* start of string to insert */
       unsigned near match_start;   /* start of matching string */
-local int           eofile;        /* flag set at end of input file */
-local unsigned      lookahead;     /* number of valid bytes ahead in window */
+static int eofile;		   /* flag set at end of input file */
+static unsigned lookahead;	   /* number of valid bytes ahead in window */
 
        unsigned max_chain_length;
 /* To speed up deflation, hash chains are never searched beyond this length.
  * A higher limit improves compression ratio but degrades the speed.
  */
 
-local unsigned int max_lazy_match;
+static unsigned int max_lazy_match;
 /* Attempt to find a better match only when the current match is strictly
  * smaller than this value. This mechanism is used only for compression
  * levels >= 4.
@@ -214,8 +214,8 @@ local unsigned int max_lazy_match;
 unsigned good_match;
 /* Use a faster search when the previous match is longer than this */
 
-local ulg rsync_sum;  /* rolling sum of rsync window */
-local ulg rsync_chunk_end; /* next rsync sequence point */
+static ulg rsync_sum;  /* rolling sum of rsync window */
+static ulg rsync_chunk_end; /* next rsync sequence point */
 
 /* Values for max_lazy_match, good_match and max_chain_length, depending on
  * the desired pack level (0..9). The values given below have been tuned to
@@ -243,7 +243,7 @@ typedef struct config {
   static_unless_ASMV int nice_match;
 #endif
 
-local config configuration_table[10] = {
+static config configuration_table[10] = {
 /*      good lazy nice chain */
 /* 0 */ {0,    0,  0,    0},  /* store only */
 /* 1 */ {4,    4,  8,    4},  /* maximum speed, no lazy matches */
@@ -265,8 +265,8 @@ local config configuration_table[10] = {
 /* ===========================================================================
  *  Prototypes for local functions.
  */
-local void fill_window   (void);
-local off_t deflate_fast (void);
+static void fill_window (void);
+static off_t deflate_fast (void);
 
 #ifdef ASMV
       int  longest_match (IPos cur_match);
@@ -274,7 +274,7 @@ local off_t deflate_fast (void);
 #endif
 
 #ifdef DEBUG
-local  void check_match (IPos start, IPos match, int length);
+static void check_match (IPos start, IPos match, int length);
 #endif
 
 /* ===========================================================================
@@ -528,7 +528,8 @@ check_match (IPos start, IPos match, int length)
  *    file reads are performed for at least two bytes (required for the
  *    translate_eol option).
  */
-local void fill_window()
+static void
+fill_window ()
 {
     register unsigned n, m;
     unsigned more = (unsigned)(window_size - (ulg)lookahead - (ulg)strstart);
@@ -584,7 +585,8 @@ local void fill_window()
 
 /* With an initial offset of START, advance rsync's rolling checksum
    by NUM bytes.  */
-local void rsync_roll(unsigned int start, unsigned int num)
+static void
+rsync_roll (unsigned int start, unsigned int num)
 {
     unsigned i;
 
@@ -630,7 +632,8 @@ local void rsync_roll(unsigned int start, unsigned int num)
  * new strings in the dictionary only for unmatched strings or for short
  * matches. It is used only for the fast compression options.
  */
-local off_t deflate_fast()
+static off_t
+deflate_fast ()
 {
     IPos hash_head; /* head of the hash chain */
     int flush = 0;  /* set if current block must be flushed, 2=>and padded  */

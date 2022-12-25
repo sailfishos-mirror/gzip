@@ -305,33 +305,33 @@ static const struct option longopts[] =
 
 /* local functions */
 
-_Noreturn local void try_help (void);
-local void help         (void);
-local void license      (void);
-local void version      (void);
-local int input_eof	(void);
-local void treat_stdin  (void);
-local void treat_file   (char *iname);
-local int create_outfile (void);
-local char *get_suffix  (char *name);
-local int  open_input_file (char *iname, struct stat *sbuf);
-local void discard_input_bytes (size_t nbytes, unsigned int flags);
-local int  make_ofname  (void);
-local void shorten_name  (char *name);
-local int  get_method   (int in);
-local void do_list      (int method);
-local int  check_ofname (void);
-local void copy_stat    (struct stat *ifstat);
-local void install_signal_handlers (void);
+_Noreturn static void try_help (void);
+static void help (void);
+static void license (void);
+static void version (void);
+static int input_eof (void);
+static void treat_stdin (void);
+static void treat_file (char *iname);
+static int create_outfile (void);
+static char *get_suffix (char *name);
+static int  open_input_file (char *iname, struct stat *sbuf);
+static void discard_input_bytes (size_t nbytes, unsigned int flags);
+static int  make_ofname (void);
+static void shorten_name (char *name);
+static int  get_method (int in);
+static void do_list (int method);
+static int  check_ofname (void);
+static void copy_stat (struct stat *ifstat);
+static void install_signal_handlers (void);
 static void remove_output_file (bool);
 static void abort_gzip_signal (int);
-_Noreturn local void do_exit (int exitcode);
+_Noreturn static void do_exit (int exitcode);
 static void finish_out (void);
       int main          (int argc, char **argv);
 static int (*work) (int infile, int outfile) = zip; /* function to call */
 
 #if ! NO_DIR
-local void treat_dir    (int fd, char *dir);
+static void treat_dir (int fd, char *dir);
 #endif
 
 #define strequ(s1, s2) (strcmp((s1),(s2)) == 0)
@@ -345,7 +345,8 @@ try_help ()
 }
 
 /* ======================================================================== */
-local void help()
+static void
+help ()
 {
     static char const* const help_msg[] = {
  "Compress or uncompress FILEs (by default, compress FILES in-place).",
@@ -394,7 +395,8 @@ local void help()
 }
 
 /* ======================================================================== */
-local void license()
+static void
+license ()
 {
     char const *const *p = license_msg;
 
@@ -403,14 +405,16 @@ local void license()
 }
 
 /* ======================================================================== */
-local void version()
+static void
+version ()
 {
     license ();
     printf ("\n");
     printf ("Written by Jean-loup Gailly.\n");
 }
 
-local void progerror (char const *string)
+static void
+progerror (char const *string)
 {
     int e = errno;
     fprintf (stderr, "%s: ", program_name);
@@ -687,7 +691,7 @@ int main (int argc, char **argv)
 }
 
 /* Return nonzero when at end of file on input.  */
-local int
+static int
 input_eof ()
 {
   if (!decompress || last_member)
@@ -727,7 +731,8 @@ get_input_size_and_time ()
 /* ========================================================================
  * Compress or decompress stdin
  */
-local void treat_stdin()
+static void
+treat_stdin ()
 {
     if (!force && !list
         && (presume_input_tty
@@ -1091,7 +1096,8 @@ volatile_strcpy (char volatile *dst, char const volatile *src)
  *   ofname has already been updated if there was an original name.
  * OUT assertions: ifd and ofd are closed in case of error.
  */
-local int create_outfile()
+static int
+create_outfile ()
 {
   int name_shortened = 0;
   int flags = (O_WRONLY | O_CREAT | O_EXCL
@@ -1382,7 +1388,8 @@ open_input_file (char *iname, struct stat *sbuf)
  * Generate ofname given ifname. Return OK, or WARNING if file must be skipped.
  * Sets save_orig_name to true if the file name has been truncated.
  */
-local int make_ofname()
+static int
+make_ofname ()
 {
     char *suff;            /* ofname z suffix */
 
@@ -1871,7 +1878,8 @@ shorten_name (char *name)
  * The compressed file already exists, so ask for confirmation.
  * Return ERROR if the file must be skipped.
  */
-local int check_ofname()
+static int
+check_ofname ()
 {
     /* Ask permission to overwrite the existing file */
     if (!force) {

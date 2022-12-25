@@ -40,8 +40,6 @@
 #include <string.h>
 #define memzero(s, n) memset ((voidp)(s), 0, (n))
 
-#define local static
-
 typedef unsigned char  uch;
 typedef unsigned short ush;
 typedef unsigned long  ulg;
