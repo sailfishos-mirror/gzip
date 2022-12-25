@@ -55,7 +55,7 @@
  *          Reverse the bits of a bit string, taking the source bits left to
  *          right and emitting them right to left.
  *
- *      void bi_windup (void)
+ *      void bi_windup ()
  *          Write out any remaining bits in an incomplete byte.
  *
  *      void copy_block(char *buf, unsigned len, int header)
@@ -108,9 +108,10 @@ int (*read_buf) (char *buf, unsigned size);
 
 /* ===========================================================================
  * Initialize the bit string routines.
+ * ZIPFILE is the output zip file; it is NO_FILE for in-memory compression.
  */
-void bi_init (zipfile)
-    file_t zipfile; /* output zip file, NO_FILE for in-memory compression */
+void
+bi_init (file_t zipfile)
 {
     zfile  = zipfile;
     bi_buf = 0;
@@ -128,12 +129,11 @@ void bi_init (zipfile)
 }
 
 /* ===========================================================================
- * Send a value on a given number of bits.
- * IN assertion: length <= 16 and value fits in length bits.
+ * Send VALUE on LENGTH bits.
+ * IN assertion: LENGTH <= 16 and VALUE fits in LENGTH bits.
  */
-void send_bits(value, length)
-    int value;  /* value to send */
-    int length; /* number of bits */
+void
+send_bits (int value, int length)
 {
 #ifdef DEBUG
     Tracev ((stderr, " l %2d v %4x ", length, value + 0u));
@@ -156,13 +156,12 @@ void send_bits(value, length)
 }
 
 /* ===========================================================================
- * Reverse the first len bits of a code, using straightforward code (a faster
+ * Reverse the first LEN bits of CODE, using straightforward code (a faster
  * method would use a table)
- * IN assertion: 1 <= len <= 15
+ * IN assertion: 1 <= LEN <= 15
  */
-unsigned bi_reverse(code, len)
-    unsigned code; /* the value to invert */
-    int len;       /* its bit length */
+unsigned
+bi_reverse (unsigned code, int len)
 {
     register unsigned res = 0;
     do {
@@ -175,7 +174,8 @@ unsigned bi_reverse(code, len)
 /* ===========================================================================
  * Write out any remaining bits in an incomplete byte.
  */
-void bi_windup()
+void
+bi_windup ()
 {
     if (bi_valid > 8) {
         put_short(bi_buf);
@@ -191,12 +191,11 @@ void bi_windup()
 
 /* ===========================================================================
  * Copy a stored block to the zip file, storing first the length and its
- * one's complement if requested.
+ * one's complement if requested.  BUF is the input data of length
+ * LEN; HEADER is true if block header must be written.
  */
-void copy_block(buf, len, header)
-    char     *buf;    /* the input data */
-    unsigned len;     /* its length */
-    int      header;  /* true if block header must be written */
+void
+copy_block (char *buf, unsigned len, int header)
 {
     bi_windup();              /* align on byte boundary */
 

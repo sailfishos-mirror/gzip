@@ -43,9 +43,8 @@
 
 char a[MAX_DIST];	/* last byte buffer for up to MAX_DIST differences */
 
-int main(argc, argv)
-  int argc;
-  char **argv;
+int
+main (int argc, char **argv)
 {
   int n = 1;		/* number of differences */
   int i;		/* difference counter */

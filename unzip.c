@@ -60,9 +60,10 @@ static int ext_header = 0; /* set if extended local header */
 /* ===========================================================================
  * Check zip file and advance inptr to the start of the compressed data.
  * Get ofname from the local header if necessary.
+ * IN is the input file descriptor.
  */
-int check_zipfile(in)
-    int in;   /* input file descriptors */
+int
+check_zipfile (int in)
 {
     uch *h = inbuf + inptr; /* first local header */
 
@@ -108,9 +109,11 @@ int check_zipfile(in)
  * IN assertions: the buffer inbuf contains already the beginning of
  *   the compressed data, from offsets inptr to insize-1 included.
  *   The magic header has already been checked. The output buffer is cleared.
+ *
+ * 'in' and 'out' are the input and output file descriptors.
  */
-int unzip(in, out)
-    int in, out;   /* input and output file descriptors */
+int
+unzip (int in, int out)
 {
     ulg orig_crc = 0;       /* original crc */
     ulg orig_len = 0;       /* original uncompressed length */

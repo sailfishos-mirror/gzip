@@ -10,9 +10,8 @@
  * Usage: zread [file[.gz]]
  * This programs assumes that gzip is somewhere in your path.
  */
-int main(argc, argv)
-    int argc;
-    char **argv;
+int
+main (int argc, char **argv)
 {
     FILE *infile;
     char cmd[256];

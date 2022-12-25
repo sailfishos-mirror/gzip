@@ -32,9 +32,10 @@ enum { SLOW = 2, FAST = 4 };
  * Deflate in to out.
  * IN assertions: the input and output buffers are cleared.
  *   The variables time_stamp and save_orig_name are initialized.
+ * 'in' and 'out' are input and output file descriptors.
  */
-int zip(in, out)
-    int in, out;            /* input and output file descriptors */
+int
+zip (int in, int out)
 {
     uch  flags = 0;         /* general purpose bit flags */
     ush  attr = 0;          /* ascii/binary flag */
@@ -121,9 +122,8 @@ int zip(in, out)
  * translation, and update the crc and input file size.
  * IN assertion: size >= 2 (for end-of-line translation)
  */
-int file_read(buf, size)
-    char *buf;
-    unsigned size;
+int
+file_read (char *buf, unsigned size)
 {
     unsigned len;
 

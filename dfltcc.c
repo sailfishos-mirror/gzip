@@ -147,7 +147,7 @@ is_bit_set (const char *bits, int n)
 }
 
 static int
-is_dfltcc_enabled (void)
+is_dfltcc_enabled ()
 {
   char facilities[(DFLTCC_FACILITY / 64 + 1) * 8];
 
@@ -415,7 +415,7 @@ dfltcc_deflate (int pack_level)
 
 /* Decompress ifd into ofd in hardware or fall back to software.  */
 int
-dfltcc_inflate (void)
+dfltcc_inflate ()
 {
   /* Check whether we can use hardware decompression.  */
   if (!is_dfltcc_enabled ())

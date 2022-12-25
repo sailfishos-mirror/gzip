@@ -99,8 +99,9 @@ local ush       bitbuf;
 local unsigned  subbitbuf;
 local int       bitcount;
 
-local void fillbuf(n)  /* Shift bitbuf n bits left, read n bits */
-    int n;
+/* Shift bitbuf N bits left, read N bits.  */
+static void
+fillbuf (int n)
 {
     bitbuf <<= n;
     while (n > bitcount) {
@@ -112,8 +113,8 @@ local void fillbuf(n)  /* Shift bitbuf n bits left, read n bits */
     bitbuf |= subbitbuf >> (bitcount -= n);
 }
 
-local unsigned getbits(n)
-    int n;
+static unsigned
+getbits (int n)
 {
     unsigned x;
 
@@ -131,11 +132,8 @@ local void init_getbits()
         maketbl.c -- make table for decoding
 ***********************************************************/
 
-local void make_table(nchar, bitlen, tablebits, table)
-    int nchar;
-    uch bitlen[];
-    int tablebits;
-    ush table[];
+static void
+make_table (int nchar, uch bitlen[], int tablebits, ush table[])
 {
     ush count[17], weight[17], start[18], *p;
     unsigned i, k, len, ch, jutbits, avail, nextcode, mask;
@@ -197,10 +195,8 @@ local void make_table(nchar, bitlen, tablebits, table)
         huf.c -- static Huffman
 ***********************************************************/
 
-local void read_pt_len(nn, nbit, i_special)
-    int nn;
-    int nbit;
-    int i_special;
+static void
+read_pt_len (int nn, int nbit, int i_special)
 {
     int i, c, n;
     unsigned mask;
@@ -333,9 +329,8 @@ local void decode_start()
 
 /* Decode the input and return the number of decoded bytes put in buffer
  */
-local unsigned decode(count, buffer)
-    unsigned count;
-    uch buffer[];
+static unsigned
+decode (unsigned count, uch buffer[])
     /* The calling function must keep the number of
        bytes to be processed.  This function decodes
        either 'count' bytes or 'DICSIZ' bytes, whichever
@@ -379,9 +374,8 @@ local unsigned decode(count, buffer)
 /* ===========================================================================
  * Unlzh in to out. Return OK or ERROR.
  */
-int unlzh(in, out)
-    int in;
-    int out;
+int
+unlzh (int in, int out)
 {
     unsigned n;
     ifd = in;

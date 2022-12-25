@@ -706,7 +706,7 @@ input_eof ()
 }
 
 static void
-get_input_size_and_time (void)
+get_input_size_and_time ()
 {
   ifile_size = -1;
   time_stamp.tv_nsec = -1;
@@ -868,8 +868,8 @@ atdir_set (char const *dir, ptrdiff_t dirlen)
 /* ========================================================================
  * Compress or decompress the given file
  */
-local void treat_file(iname)
-    char *iname;
+static void
+treat_file (char *iname)
 {
     /* Accept "-" as synonym for stdin */
     if (strequ(iname, "-")) {
@@ -1169,8 +1169,8 @@ local int create_outfile()
  * .??z suffix as indicating a compressed file; some people use .xyz
  * to denote volume data.
  */
-local char *get_suffix(name)
-    char *name;
+static char *
+get_suffix (char *name)
 {
     int nlen, slen;
     char suffix[MAX_SUFFIX+3]; /* last chars of name, forced to lower case */
@@ -1285,9 +1285,7 @@ open_and_stat (char *name, int flags, struct stat *st)
  * Return an open file descriptor or -1.
  */
 static int
-open_input_file (iname, sbuf)
-    char *iname;
-    struct stat *sbuf;
+open_input_file (char *iname, struct stat *sbuf)
 {
     int ilen;  /* strlen(ifname) */
     int z_suffix_errno = 0;
@@ -1466,9 +1464,7 @@ local int make_ofname()
    zero byte if NBYTES == (size_t) -1.  If FLAGS say that the header
    CRC should be computed, update the CRC accordingly.  */
 static void
-discard_input_bytes (nbytes, flags)
-    size_t nbytes;
-    unsigned int flags;
+discard_input_bytes (size_t nbytes, unsigned int flags)
 {
   while (nbytes != 0)
     {
@@ -1490,11 +1486,12 @@ discard_input_bytes (nbytes, flags)
  * Updates time_stamp if there is one and neither -m nor -n is used.
  * This function may be called repeatedly for an input file consisting
  * of several contiguous gzip'ed members.
+ * 'in' is the input file descriptor.
  * IN assertions: there is at least one remaining compressed member.
  *   If the member is a zip file, it must be the only one.
  */
-local int get_method(in)
-    int in;        /* input file descriptor */
+static int
+get_method (int in)
 {
     uch flags;     /* compression flags */
     uch magic[10]; /* magic header */
@@ -1816,8 +1813,8 @@ do_list (int method)
  *
  * IN assertion: for compression, the suffix of the given name is z_suffix.
  */
-local void shorten_name(name)
-    char *name;
+static void
+shorten_name (char *name)
 {
     int len;                 /* length of name without z_suffix */
     char *trunc = NULL;      /* character to be truncated */
@@ -1921,8 +1918,8 @@ do_chown (int fd, char const *name, uid_t uid, gid_t gid)
  * Copy modes, times, ownership from input file to output file.
  * IN assertion: to_stdout is false.
  */
-local void copy_stat(ifstat)
-    struct stat *ifstat;
+static void
+copy_stat (struct stat *ifstat)
 {
     mode_t mode = ifstat->st_mode & S_IRWXUGO;
     int r;
@@ -1986,9 +1983,8 @@ local void copy_stat(ifstat)
 /* ========================================================================
  * Recurse through the given directory.
  */
-local void treat_dir (fd, dir)
-    int fd;
-    char *dir;
+static void
+treat_dir (int fd, char *dir)
 {
     DIR      *dirp;
     char     nbuf[MAX_PATH_LEN];
@@ -2066,8 +2062,8 @@ install_signal_handlers ()
 /* ========================================================================
  * Free all dynamically allocated variables and exit with the given code.
  */
-local void do_exit(exitcode)
-    int exitcode;
+static void
+do_exit (int exitcode)
 {
     static int in_exit = 0;
 
@@ -2089,7 +2085,7 @@ local void do_exit(exitcode)
 }
 
 static void
-finish_out (void)
+finish_out ()
 {
   if (fclose (stdout) != 0)
     write_error ();
@@ -2124,7 +2120,7 @@ remove_output_file (bool signals_already_blocked)
  * Error handler.
  */
 void
-abort_gzip (void)
+abort_gzip ()
 {
    remove_output_file (false);
    do_exit(ERROR);

@@ -96,9 +96,10 @@ static int block_mode = BLOCK_MODE;
  *   the compressed data, from offsets iptr to insize-1 included.
  *   The magic header has already been checked and skipped.
  *   bytes_in and bytes_out have been initialized.
+ * 'in' and 'out' are the input and output file descriptors.
  */
-int unlzw(in, out)
-    int in, out;    /* input and output file descriptors */
+int
+unlzw (int in, int out)
 {
     char_type  *stackp;
     code_int   code;

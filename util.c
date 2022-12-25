@@ -103,9 +103,10 @@ static ulg crc = 0xffffffffL;
  * Copy input to output unchanged: zcat == cat with --force.
  * IN assertion: insize bytes have already been read in inbuf and inptr bytes
  * already processed or copied.
+ * 'in' and 'out' are the input and output file descriptors.
  */
-int copy(in, out)
-    int in, out;   /* input and output file descriptors */
+int
+copy (int in, int out)
 {
     int got;
 
@@ -126,10 +127,10 @@ int copy(in, out)
  * Run a set of bytes through the crc shift register.  If s is a NULL
  * pointer, then initialize the crc shift register contents instead.
  * Return the current crc in either case.
+ * S points to N bytes to pump through.
  */
-ulg updcrc(s, n)
-    const uch *s;           /* pointer to bytes to pump through */
-    unsigned n;             /* number of bytes in s[] */
+ulg
+updcrc (uch const *s, unsigned n)
 {
     register ulg c;         /* temporary variable */
 
@@ -147,7 +148,7 @@ ulg updcrc(s, n)
 
 /* Return a current CRC value.  */
 ulg
-getcrc (void)
+getcrc ()
 {
   return crc ^ 0xffffffffL;
 }
@@ -173,9 +174,10 @@ void clear_bufs()
 
 /* ===========================================================================
  * Fill the input buffer. This is called only when the buffer is empty.
+ * EOF_OK is set if EOF acceptable as a result.
  */
-int fill_inbuf(eof_ok)
-    int eof_ok;          /* set if EOF acceptable as a result */
+int
+fill_inbuf (int eof_ok)
 {
     int len;
 
@@ -205,10 +207,7 @@ int fill_inbuf(eof_ok)
 /* Like the standard read function, except do not attempt to read more
    than INT_MAX bytes at a time.  */
 int
-read_buffer (fd, buf, cnt)
-     int fd;
-     voidp buf;
-     unsigned int cnt;
+read_buffer (int fd, voidp buf, unsigned int cnt)
 {
   int len;
   if (INT_MAX < cnt)
@@ -236,10 +235,7 @@ read_buffer (fd, buf, cnt)
 
 /* Likewise for 'write'.  */
 static int
-write_buffer (fd, buf, cnt)
-     int fd;
-     voidp buf;
-     unsigned int cnt;
+write_buffer (int fd, voidp buf, unsigned int cnt)
 {
   if (INT_MAX < cnt)
     cnt = INT_MAX;
@@ -275,10 +271,8 @@ void flush_window()
  * Update the count of output bytes.  If testing, do not do any
  * output.  Otherwise, write the buffer, checking for errors.
  */
-void write_buf(fd, buf, cnt)
-    int       fd;
-    voidp     buf;
-    unsigned  cnt;
+void
+write_buf (int fd, voidp buf, unsigned  cnt)
 {
     unsigned  n;
 
@@ -298,8 +292,8 @@ void write_buf(fd, buf, cnt)
 /* ========================================================================
  * Put string s in lower case, return s.
  */
-char *strlwr(s)
-    char *s;
+char *
+strlwr (char *s)
 {
     char *t;
     for (t = s; *t; t++)
@@ -313,8 +307,7 @@ char *strlwr(s)
  * case sensitive, force the base name to lower case.
  */
 char *
-gzip_base_name (fname)
-    char *fname;
+gzip_base_name (char *fname)
 {
     fname = last_component (fname);
     if (casemap('A') == 'a') strlwr(fname);
@@ -324,8 +317,8 @@ gzip_base_name (fname)
 /* ========================================================================
  * Unlink a file, working around the unlink readonly bug (if present).
  */
-int xunlink (filename)
-     char *filename;
+int
+xunlink (char *filename)
 {
   int r = unlink (filename);
 
@@ -355,8 +348,8 @@ int xunlink (filename)
  * MAKE_LEGAL_NAME in tailor.h and providing the function in a target
  * dependent module.
  */
-void make_simple_name(name)
-    char *name;
+void
+make_simple_name (char *name)
 {
     char *p = strrchr(name, '.');
     if (p == NULL) return;
@@ -474,10 +467,8 @@ void write_error()
 /* ========================================================================
  * Display compression ratio on the given stream on 6 characters.
  */
-void display_ratio(num, den, file)
-    off_t num;
-    off_t den;
-    FILE *file;
+void
+display_ratio (off_t num, off_t den, FILE *file)
 {
     fprintf(file, "%5.1f%%", den == 0 ? 0 : 100.0 * num / den);
 }
@@ -486,10 +477,8 @@ void display_ratio(num, den, file)
  * Print an off_t.  There's no completely portable way to use printf,
  * so we do it ourselves.
  */
-void fprint_off(file, offset, width)
-    FILE *file;
-    off_t offset;
-    int width;
+void
+fprint_off (FILE *file, off_t offset, int width)
 {
     char buf[CHAR_BIT * sizeof (off_t)];
     char *p = buf + sizeof buf;

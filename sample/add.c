@@ -16,7 +16,8 @@
 
 char a[MAX_DIST];	/* last byte buffer for up to MAX_DIST differences */
 
-int main()
+int
+main ()
 {
   int n;		/* number of differences */
   int i;		/* difference counter */

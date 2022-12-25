@@ -78,7 +78,7 @@ local int valid;                  /* number of valid bits in bitbuf */
 
 /* Read an input byte, reporting an error at EOF.  */
 static unsigned char
-read_byte (void)
+read_byte ()
 {
   int b = get_byte ();
   if (b < 0)
@@ -209,9 +209,11 @@ local void build_tree()
  * IN assertions: the buffer inbuf contains already the beginning of
  *   the compressed data, from offsets inptr to insize-1 included.
  *   The magic header has already been checked. The output buffer is cleared.
+ *
+ * 'in' and 'out' are the input and output file descriptors.
  */
-int unpack(in, out)
-    int in, out;            /* input and output file descriptors */
+int
+unpack (int in, int out)
 {
     int len;                /* Bit length of current code */
     unsigned eob;           /* End Of Block code */

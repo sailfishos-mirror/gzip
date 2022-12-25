@@ -68,7 +68,7 @@
  *      void lm_init (int pack_level, ush *flags)
  *          Initialize the "longest match" routines for a new file
  *
- *      off_t deflate (void)
+ *      off_t deflate ()
  *          Processes a new input file and return its compressed length. Sets
  *          the compressed length, crc, deflate flags and internal file
  *          attributes.
@@ -500,9 +500,8 @@ longest_match(IPos cur_match)
 /* ===========================================================================
  * Check that the match at match_start is indeed a match.
  */
-local void check_match(start, match, length)
-    IPos start, match;
-    int length;
+static void
+check_match (IPos start, IPos match, int length)
 {
     /* check that the match is indeed a match */
     if (memcmp((char*)window + match,
