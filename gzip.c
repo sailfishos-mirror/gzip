@@ -305,7 +305,7 @@ static const struct option longopts[] =
 
 /* local functions */
 
-local noreturn void try_help (void);
+_Noreturn local void try_help (void);
 local void help         (void);
 local void license      (void);
 local void version      (void);
@@ -325,7 +325,7 @@ local void copy_stat    (struct stat *ifstat);
 local void install_signal_handlers (void);
 static void remove_output_file (bool);
 static void abort_gzip_signal (int);
-local noreturn void do_exit (int exitcode);
+_Noreturn local void do_exit (int exitcode);
 static void finish_out (void);
       int main          (int argc, char **argv);
 static int (*work) (int infile, int outfile) = zip; /* function to call */

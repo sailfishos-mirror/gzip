@@ -38,7 +38,6 @@
 #include <sys/types.h> /* for off_t */
 #include <time.h>
 #include <string.h>
-#include <stdnoreturn.h>
 #define memzero(s, n) memset ((voidp)(s), 0, (n))
 
 #define local static
@@ -273,7 +272,7 @@ extern int unpack     (int in, int out);
 extern int unlzh      (int in, int out);
 
         /* in gzip.c */
-extern noreturn void abort_gzip (void);
+_Noreturn extern void abort_gzip (void);
 
         /* in deflate.c */
 extern off_t deflate (int pack_level);
@@ -311,11 +310,11 @@ extern char *gzip_base_name (char *fname) _GL_ATTRIBUTE_PURE;
 extern int xunlink        (char *fname);
 extern void make_simple_name (char *name);
 extern char *add_envopt   (int *argcp, char ***argvp, char const *env);
-extern noreturn void gzip_error    (char const *m);
-extern noreturn void xalloc_die    (void);
+_Noreturn extern void gzip_error (char const *m);
+_Noreturn extern void xalloc_die (void);
 extern void warning       (char const *m);
-extern noreturn void read_error    (void);
-extern noreturn void write_error   (void);
+_Noreturn extern void read_error (void);
+_Noreturn extern void write_error (void);
 extern void display_ratio (off_t num, off_t den, FILE *file);
 extern void fprint_off    (FILE *, off_t, int);
 

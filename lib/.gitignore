@@ -195,7 +195,6 @@
 /stdio.in.h
 /stdlib.h
 /stdlib.in.h
-/stdnoreturn.in.h
 /stpcpy.c
 /strdup.c
 /strerror-override.c
