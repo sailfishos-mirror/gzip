@@ -72,8 +72,8 @@ static char const *const license_msg[] = {
 #include "timespec.h"
 
 #include "dirname.h"
-#include "dosname.h"
 #include "fcntl--.h"
+#include "filename.h"
 #include "getopt.h"
 #include "ignore-value.h"
 #include "stat-time.h"
