@@ -6,6 +6,7 @@
 /alloca.in.h
 /arg-nonnull.h
 /asnprintf.c
+/assert.in.h
 /assure.h
 /at-func.c
 /attribute.h
@@ -101,6 +102,7 @@
 /ialloc.h
 /idx.h
 /ignore-value.h
+/intprops-internal.h
 /intprops.h
 /inttypes.h
 /inttypes.in.h
@@ -181,8 +183,7 @@
 /stat-w32.h
 /stat.c
 /stdalign.in.h
-/stdbool.h
-/stdbool.in.h
+/stdckdint.in.h
 /stddef.h
 /stddef.in.h
 /stdint.h
