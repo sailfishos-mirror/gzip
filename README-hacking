@@ -72,7 +72,7 @@ If you have already bootstrapped, you can redo it in two phases:
         $ ./autogen.sh
 
 Separating the phases can be useful for reproducible builds, and for
-appling local modifications between the two phases.
+applying local modifications between the two phases.
 
 Enjoy!
 
