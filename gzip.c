@@ -134,7 +134,7 @@ static char const *const license_msg[] = {
    windows; the alignment requirement is 4096.  On other platforms
    alignment doesn't hurt, and alignment up to 4096 is portable so
    let's do that.  */
-#ifdef __alignas_is_defined
+#if defined HAVE_C_ALIGNASOF || defined alignas
 # define BUFFER_ALIGNED alignas (4096)
 #else
 # define BUFFER_ALIGNED /**/

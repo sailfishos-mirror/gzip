@@ -9,7 +9,7 @@ GNU gzip NEWS                                    -*- outline -*-
   [bug present since the beginning]
 
   Port to C23, which does not allow K&R-style function definitions
-  with parameters.
+  with parameters, and which does not define __alignas_is_defined.
 
 
 * Noteworthy changes in release 1.12 (2022-04-07) [stable]
