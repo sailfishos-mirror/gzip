@@ -65,11 +65,11 @@ should output no difference.
 
 If you have already bootstrapped, you can redo it in two phases:
 
-	$ # 1. Fetch auxiliary files from the network.
-	$ ./autopull.sh
+        $ # 1. Fetch auxiliary files from the network.
+        $ ./autopull.sh
         $
-	$ # 2. Generate files locally.
-	$ ./autogen.sh
+        $ # 2. Generate files locally.
+        $ ./autogen.sh
 
 Separating the phases can be useful for reproducible builds, and for
 appling local modifications between the two phases.
