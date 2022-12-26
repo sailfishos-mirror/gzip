@@ -78,7 +78,7 @@ static int valid;                  /* number of valid bits in bitbuf */
 
 /* Read an input byte, reporting an error at EOF.  */
 static unsigned char
-read_byte ()
+read_byte (void)
 {
   int b = get_byte ();
   if (b < 0)

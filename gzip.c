@@ -710,7 +710,7 @@ input_eof ()
 }
 
 static void
-get_input_size_and_time ()
+get_input_size_and_time (void)
 {
   ifile_size = -1;
   time_stamp.tv_nsec = -1;

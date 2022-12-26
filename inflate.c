@@ -627,7 +627,7 @@ inflate_codes(struct huft *tl, struct huft *td, int bl, int bd)
 
 /* "decompress" an inflated type 0 (stored) block. */
 static int
-inflate_stored ()
+inflate_stored(void)
 {
   unsigned n;           /* number of bytes in block */
   unsigned w;           /* current window position */
@@ -683,7 +683,7 @@ inflate_stored ()
    either replace this with a custom decoder, or at least precompute the
    Huffman tables. */
 static int
-inflate_fixed ()
+inflate_fixed(void)
 {
   int i;                /* temporary variable */
   struct huft *tl;      /* literal/length code table */
@@ -733,7 +733,7 @@ inflate_fixed ()
 
 /* decompress an inflated type 2 (dynamic Huffman codes) block. */
 static int
-inflate_dynamic ()
+inflate_dynamic(void)
 {
   int i;                /* temporary variables */
   unsigned j;

@@ -147,7 +147,7 @@ is_bit_set (const char *bits, int n)
 }
 
 static int
-is_dfltcc_enabled ()
+is_dfltcc_enabled (void)
 {
   char facilities[(DFLTCC_FACILITY / 64 + 1) * 8];
 
