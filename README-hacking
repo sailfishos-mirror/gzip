@@ -63,7 +63,7 @@ and the Git master copy:
 
 should output no difference.
 
-If you have already bootstrapped, you can redo it in two phases:
+Instead of running ./bootstrap you can run its two phases:
 
         $ # 1. Fetch auxiliary files from the network.
         $ ./autopull.sh
@@ -71,8 +71,8 @@ If you have already bootstrapped, you can redo it in two phases:
         $ # 2. Generate files locally.
         $ ./autogen.sh
 
-Separating the phases can be useful for reproducible builds, and for
-applying local modifications between the two phases.
+Separating the phases can be useful for reproducible builds,
+and for applying local modifications between the two phases.
 
 Enjoy!
 

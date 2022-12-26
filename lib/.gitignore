@@ -6,6 +6,7 @@
 /alloca.in.h
 /arg-nonnull.h
 /asnprintf.c
+/assert.h
 /assert.in.h
 /assure.h
 /at-func.c
@@ -80,6 +81,7 @@
 /ftello.c
 /getcwd-lgpl.c
 /getdtablesize.c
+/getopt-cdefs.h
 /getopt-cdefs.in.h
 /getopt-core.h
 /getopt-ext.h
@@ -181,7 +183,9 @@
 /stat-w32.c
 /stat-w32.h
 /stat.c
+/stdalign.h
 /stdalign.in.h
+/stdckdint.h
 /stdckdint.in.h
 /stddef.h
 /stddef.in.h
