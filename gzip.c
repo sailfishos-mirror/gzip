@@ -58,8 +58,6 @@ static char const *const license_msg[] = {
 #include <ctype.h>
 #include <sys/types.h>
 #include <signal.h>
-#include <stdalign.h>
-#include <stdbool.h>
 #include <stddef.h>
 #include <sys/stat.h>
 #include <errno.h>

@@ -18,8 +18,6 @@
 
 #include <config.h>
 
-#include <stdalign.h>
-#include <stdbool.h>
 #include <stdlib.h>
 
 #ifdef HAVE_SYS_SDT_H
