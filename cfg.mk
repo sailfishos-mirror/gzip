@@ -101,3 +101,5 @@ export _gl_TS_dir = .
 export _gl_TS_unmarked_extern_vars = \
   block_start d_buf inbuf outbuf prev read_buf strstart window \
   match_start prev_length max_chain_length good_match nice_match
+
+_gl_TS_extern = (?:_Noreturn )?extern
