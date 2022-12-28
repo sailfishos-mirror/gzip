@@ -314,13 +314,13 @@ int *m                  /* maximum lookup bits, returns actual */
 #ifdef DEBUG
     if (1 < verbose && *p)
       {
-	if (' ' <= n - i && n - i <= '~')
-	  {
-	    char ch = n - i;
-	    fprintf (stderr, "%c %u\n", ch, *p);
-	  }
-	else
-	  fprintf (stderr, "0x%x %u\n", n - i, *p);
+        if (' ' <= n - i && n - i <= '~')
+          {
+            char ch = n - i;
+            fprintf (stderr, "%c %u\n", ch, *p);
+          }
+        else
+          fprintf (stderr, "0x%x %u\n", n - i, *p);
       }
 #endif
     c[*p]++;                    /* assume all entries <= BMAX */
@@ -584,7 +584,7 @@ inflate_codes(struct huft *tl, struct huft *td, int bl, int bd)
       d = w - t->v.n - ((unsigned)b & mask_bits[e]);
       DUMPBITS(e)
       if (fresh && w <= d)
-	return 1;
+        return 1;
       Tracevv ((stderr, "\\[%u,%u]", w - d, n));
 
       /* do the copy */
