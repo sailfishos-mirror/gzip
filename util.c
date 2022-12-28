@@ -444,23 +444,15 @@ void warning (char const *m)
 
 void read_error()
 {
-    int e = errno;
-    fprintf (stderr, "\n%s: ", program_name);
-    if (e != 0) {
-        errno = e;
-        perror(ifname);
-    } else {
-        fprintf(stderr, "%s: unexpected end of file\n", ifname);
-    }
+    fprintf (stderr, "\n%s: %s: %s\n",
+             program_name, ifname,
+             errno ? strerror (errno) : "unexpected end of file");
     abort_gzip();
 }
 
 void write_error()
 {
-    int e = errno;
-    fprintf (stderr, "\n%s: ", program_name);
-    errno = e;
-    perror(ofname);
+    fprintf (stderr, "\n%s: %s: %s\n", program_name, ofname, strerror (errno));
     abort_gzip();
 }
 

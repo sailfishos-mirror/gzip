@@ -70,7 +70,6 @@
 /ldexpl.m4
 /lib-ignore.m4
 /limits-h.m4
-/lock.m4
 /lseek.m4
 /lstat.m4
 /malloc.m4
@@ -95,14 +94,12 @@
 /openat.m4
 /opendir.m4
 /pathmax.m4
-/perror.m4
 /pid_t.m4
 /pipe.m4
 /printf-frexp.m4
 /printf-frexpl.m4
 /printf-posix-rpl.m4
 /printf.m4
-/pthread_rwlock_rdlock.m4
 /raise.m4
 /readdir.m4
 /realloc.m4
@@ -128,13 +125,11 @@
 /stpcpy.m4
 /strdup.m4
 /strerror.m4
-/strerror_r.m4
 /string_h.m4
 /sys_socket_h.m4
 /sys_stat_h.m4
 /sys_time_h.m4
 /sys_types_h.m4
-/threadlib.m4
 /time_h.m4
 /timespec.m4
 /ungetc.m4
@@ -156,6 +151,5 @@
 /wint_t.m4
 /xalloc.m4
 /xsize.m4
-/year2038.m4
 /yesno.m4
 /zzgnulib.m4

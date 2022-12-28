@@ -414,10 +414,7 @@ version ()
 static void
 progerror (char const *string)
 {
-    int e = errno;
-    fprintf (stderr, "%s: ", program_name);
-    errno = e;
-    perror(string);
+    fprintf (stderr, "%s: %s: %s\n", program_name, string, strerror (errno));
     exit_code = ERROR;
 }
 
@@ -1045,14 +1042,8 @@ treat_file (char *iname)
             sigprocmask (SIG_SETMASK, &oldset, NULL);
 
             if (unlink_errno)
-              {
-                WARN ((stderr, "%s: ", program_name));
-                if (!quiet)
-                  {
-                    errno = unlink_errno;
-                    perror (ifname);
-                  }
-              }
+              WARN ((stderr, "%s: %s: %s\n", program_name, ifname,
+                     strerror (unlink_errno)));
           }
       }
 
@@ -1948,15 +1939,7 @@ copy_stat (struct stat *ifstat)
         }
       }
     else
-      {
-        int e = errno;
-        WARN ((stderr, "%s: ", program_name));
-        if (!quiet)
-          {
-            errno = e;
-            perror (ofname);
-          }
-      }
+      WARN ((stderr, "%s: %s: %s\n", program_name, ofname, strerror (errno)));
 #endif
 
     /* Change the group first, then the permissions, then the owner.
@@ -1972,14 +1955,8 @@ copy_stat (struct stat *ifstat)
 #else
     r = chmod (ofname, mode);
 #endif
-    if (r != 0) {
-        int e = errno;
-        WARN ((stderr, "%s: ", program_name));
-        if (!quiet) {
-            errno = e;
-            perror(ofname);
-        }
-    }
+    if (r != 0)
+      WARN ((stderr, "%s: %s: %s\n", program_name, ofname, strerror (errno)));
 
     do_chown (ofd, ofname, ifstat->st_uid, -1);
 }

@@ -251,8 +251,15 @@ extern int verbose;        /* be verbose (-v) */
 #  define Tracecv(c,x)
 #endif
 
-#define WARN(msg) {if (!quiet) fprintf msg ; \
-                   if (exit_code == OK) exit_code = WARNING;}
+#define WARN(msg) \
+  do \
+    { \
+      if (!quiet) \
+        fprintf msg; \
+      if (exit_code == OK) \
+        exit_code = WARNING; \
+    } \
+  while (false)
 
         /* in zip.c: */
 extern int zip        (int in, int out);
