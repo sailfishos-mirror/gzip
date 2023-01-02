@@ -2,7 +2,7 @@
 # Show how zgrep applied to a crafted file name may overwrite
 # a selected file with chosen content.  Fixed in gzip-1.12.
 
-# Copyright (C) 2022 Free Software Foundation, Inc.
+# Copyright (C) 2022-2023 Free Software Foundation, Inc.
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

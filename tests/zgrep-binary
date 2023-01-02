@@ -2,7 +2,7 @@
 # 'zgrep PATTERN FILE' would output "(standard input): binary file matches"
 # without mentioning FILE.  Fixed in gzip-1.12.
 
-# Copyright (C) 2022 Free Software Foundation, Inc.
+# Copyright (C) 2022-2023 Free Software Foundation, Inc.
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
