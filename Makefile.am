@@ -86,7 +86,7 @@ version.h: Makefile
 
 gzip.doc: gzip.1
 	$(AM_V_GEN)groff -man -Tascii $(srcdir)/gzip.1 | col -b | uniq > $@-t \
-	  && mv $@-t $@
+	  && mv $@-t $(srcdir)/gzip.doc
 
 gzip.doc.gz: gzip.doc $(bin_PROGRAMS)
 	$(AM_V_GEN)./gzip < $(srcdir)/gzip.doc >$@-t && mv $@-t $@
