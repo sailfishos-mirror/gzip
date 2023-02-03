@@ -25,6 +25,7 @@ TESTS =					\
   memcpy-abuse				\
   mixed					\
   null-suffix-clobber			\
+  pipe-output				\
   reproducible				\
   stdin					\
   timestamp				\

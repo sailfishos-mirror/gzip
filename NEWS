@@ -2,6 +2,13 @@ GNU gzip NEWS                                    -*- outline -*-
 
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
+** Changes in behavior
+
+  When SIGPIPE is ignored, gzip now exits with status 2 (warning)
+  instead of status 1 (error) when writing to a broken pipe.  This is
+  more useful with programs like 'less' that treat gzip exit status 2
+  as a non-failure.
+
 ** Bug fixes
 
   'gzip -d' no longer fails to report invalid compressed data

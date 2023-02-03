@@ -277,6 +277,7 @@ extern int unpack     (int in, int out);
 extern int unlzh      (int in, int out);
 
         /* in gzip.c */
+_Noreturn extern void finish_up_gzip (int);
 _Noreturn extern void abort_gzip (void);
 
         /* in deflate.c */

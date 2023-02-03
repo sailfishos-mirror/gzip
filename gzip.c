@@ -202,11 +202,6 @@ struct timespec time_stamp;
 /* The set of signals that are caught.  */
 static sigset_t caught_signals;
 
-/* If nonzero then exit with status WARNING, rather than with the usual
-   signal status, on receipt of a signal with this value.  This
-   suppresses a "Broken Pipe" message with some shells.  */
-static int volatile exiting_signal;
-
 /* If nonnegative, close this file descriptor and unlink remove_ofname
    on error.  */
 static int volatile remove_ofname_fd = -1;
@@ -647,11 +642,6 @@ int main (int argc, char **argv)
     ALLOC(ush, tab_prefix1, 1L<<(BITS-1));
 #endif
 
-#if SIGPIPE
-    exiting_signal = quiet ? SIGPIPE : 0;
-#endif
-    install_signal_handlers ();
-
     /* And get to work */
     if (file_count != 0) {
         if (to_stdout && !test && (!decompress || !ascii)) {
@@ -1088,6 +1078,7 @@ volatile_strcpy (char volatile *dst, char const volatile *src)
 static int
 create_outfile ()
 {
+  static bool signal_handlers_installed;
   int name_shortened = 0;
   int flags = (O_WRONLY | O_CREAT | O_EXCL
                | (ascii && decompress ? 0 : O_BINARY));
@@ -1103,6 +1094,12 @@ create_outfile ()
           base = b;
           atfd = f;
         }
+    }
+
+  if (!signal_handlers_installed)
+    {
+      signal_handlers_installed = true;
+      install_signal_handlers ();
     }
 
   for (;;)
@@ -2103,12 +2100,17 @@ remove_output_file (bool signals_already_blocked)
  * Error handler.
  */
 void
+finish_up_gzip (int exitcode)
+{
+  if (0 <= remove_ofname_fd)
+    remove_output_file (false);
+  do_exit (exitcode);
+}
+void
 abort_gzip ()
 {
-   remove_output_file (false);
-   do_exit(ERROR);
+  finish_up_gzip (ERROR);
 }
-
 /* ========================================================================
  * Signal handler.
  */
@@ -2116,8 +2118,6 @@ static void
 abort_gzip_signal (int sig)
 {
    remove_output_file (true);
-   if (sig == exiting_signal)
-     _exit (WARNING);
    signal (sig, SIG_DFL);
    raise (sig);
 }

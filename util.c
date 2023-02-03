@@ -36,6 +36,10 @@
 #  define CHAR_BIT 8
 #endif
 
+#ifndef EPIPE
+# define EPIPE 0
+#endif
+
 static int write_buffer (int, voidp, unsigned int);
 
 /* ========================================================================
@@ -452,8 +456,10 @@ void read_error()
 
 void write_error()
 {
+  int exitcode = errno == EPIPE ? WARNING : ERROR;
+  if (! (exitcode == WARNING && quiet))
     fprintf (stderr, "\n%s: %s: %s\n", program_name, ofname, strerror (errno));
-    abort_gzip();
+  finish_up_gzip (exitcode);
 }
 
 /* ========================================================================
