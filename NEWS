@@ -4,6 +4,8 @@ GNU gzip NEWS                                    -*- outline -*-
 
 ** Changes in behavior
 
+  zless now diagnoses gzip failures, if using less 623 or later.
+
   When SIGPIPE is ignored, gzip now exits with status 2 (warning)
   instead of status 1 (error) when writing to a broken pipe.  This is
   more useful with programs like 'less' that treat gzip exit status 2
