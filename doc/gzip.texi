@@ -410,6 +410,9 @@ compression level is @option{-6} (that is, biased towards high compression at
 expense of speed).
 @end table
 
+An exit status of 0 indicates success, 1 indicates failure, and 2
+indicates a warning but not failure.
+
 @node Advanced usage
 @chapter Advanced usage
 @cindex concatenated files
