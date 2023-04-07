@@ -39,7 +39,6 @@
 /errno.h
 /errno.in.h
 /error.c
-/error.h
 /exitfail.c
 /exitfail.h
 /fchdir.c
@@ -240,3 +239,5 @@
 /xsize.h
 /yesno.c
 /yesno.h
+/error.in.h
+/time.c
