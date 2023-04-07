@@ -1135,7 +1135,7 @@ create_outfile ()
           break;
 
         default:
-          progerror (ofname);
+          write_error ();
           close (ifd);
           return ERROR;
         }

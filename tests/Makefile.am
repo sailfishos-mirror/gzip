@@ -34,6 +34,7 @@ TESTS =					\
   unpack-invalid			\
   unpack-valid				\
   upper-suffix				\
+  write-error				\
   z-suffix				\
   zdiff					\
   zgrep-f				\
