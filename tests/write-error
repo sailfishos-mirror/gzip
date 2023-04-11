@@ -24,7 +24,11 @@ fail=0
 mkdir d || framework_failure_
 echo > d/f || framework_failure_
 chmod a-w d || framework_failure_
-
-returns_ 1 gzip d/f > out 2> err || fail=1
+if test -w d; then
+  echo >&2 "$0: being root, skipping this test"
+  fail=77
+else
+  returns_ 1 gzip d/f > out 2> err || fail=1
+fi
 
 Exit $fail
