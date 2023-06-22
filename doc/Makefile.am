@@ -17,6 +17,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 # 02110-1301, USA.
 
+
+# The customization variable CHECK_NORMAL_MENU_STRUCTURE is necessary with
+# makeinfo versions ≥ 6.8.
+MAKEINFO = @MAKEINFO@ -c CHECK_NORMAL_MENU_STRUCTURE=1
+
 info_TEXINFOS = gzip.texi
 
 gzip_TEXINFOS = fdl.texi
