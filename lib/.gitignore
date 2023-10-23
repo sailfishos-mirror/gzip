@@ -39,6 +39,7 @@
 /errno.h
 /errno.in.h
 /error.c
+/error.in.h
 /exitfail.c
 /exitfail.h
 /fchdir.c
@@ -62,6 +63,7 @@
 /float.c
 /float.h
 /float.in.h
+/fopen.c
 /fprintf.c
 /fpucw.h
 /fpurge.c
@@ -125,6 +127,7 @@
 /math.c
 /math.h
 /math.in.h
+/mbszero.c
 /memchr.c
 /memchr.valgrind
 /mempcpy.c
@@ -206,6 +209,7 @@
 /sys_stat.in.h
 /sys_time.in.h
 /sys_types.in.h
+/time.c
 /time.h
 /time.in.h
 /timespec.c
@@ -237,5 +241,3 @@
 /xsize.h
 /yesno.c
 /yesno.h
-/error.in.h
-/time.c

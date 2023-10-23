@@ -9,6 +9,7 @@
 /clock_time.m4
 /close.m4
 /closedir.m4
+/codeset.m4
 /dirent-safer.m4
 /dirent_h.m4
 /dirfd.m4
@@ -18,6 +19,7 @@
 /eealloc.m4
 /errno_h.m4
 /error.m4
+/error_h.m4
 /exponentd.m4
 /exponentf.m4
 /exponentl.m4
@@ -34,6 +36,7 @@
 /fflush.m4
 /filenamecat.m4
 /float_h.m4
+/fopen.m4
 /fpieee.m4
 /fprintf-posix.m4
 /fpurge.m4
@@ -70,6 +73,9 @@
 /ldexpl.m4
 /lib-ignore.m4
 /limits-h.m4
+/locale-fr.m4
+/locale-ja.m4
+/locale-zh.m4
 /lseek.m4
 /lstat.m4
 /malloc.m4
@@ -77,6 +83,8 @@
 /manywarnings-c++.m4
 /manywarnings.m4
 /math_h.m4
+/mbrtowc.m4
+/mbstate_t.m4
 /memchr.m4
 /mempcpy.m4
 /memrchr.m4
@@ -86,6 +94,7 @@
 /msvc-inval.m4
 /msvc-nothrow.m4
 /multiarch.m4
+/musl.m4
 /nocrash.m4
 /off_t.m4
 /open-cloexec.m4
@@ -98,6 +107,7 @@
 /pipe.m4
 /printf-frexp.m4
 /printf-frexpl.m4
+/printf-posix.m4
 /printf.m4
 /raise.m4
 /readdir.m4
@@ -115,6 +125,7 @@
 /stat-time.m4
 /stat.m4
 /std-gnu11.m4
+/stdalign.m4
 /stddef_h.m4
 /stdint.m4
 /stdint_h.m4
@@ -128,6 +139,7 @@
 /sys_stat_h.m4
 /sys_time_h.m4
 /sys_types_h.m4
+/time.m4
 /time_h.m4
 /timespec.m4
 /ungetc.m4
@@ -151,9 +163,3 @@
 /xsize.m4
 /yesno.m4
 /zzgnulib.m4
-/codeset.m4
-/error_h.m4
-/locale-fr.m4
-/musl.m4
-/printf-posix.m4
-/time.m4
