@@ -159,6 +159,8 @@
 /printf-parse.c
 /printf-parse.h
 /printf.c
+/qsort.c
+/qsort_r.c
 /raise.c
 /readdir.c
 /realloc.c

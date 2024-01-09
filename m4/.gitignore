@@ -109,6 +109,7 @@
 /printf-frexpl.m4
 /printf-posix.m4
 /printf.m4
+/qsort_r.m4
 /raise.m4
 /readdir.m4
 /realloc.m4
