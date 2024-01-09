@@ -788,7 +788,6 @@ treat_stdin ()
 
         method = get_method(ifd);
         if (method < 0) return; /* error message already emitted */
-        bytes_out = 0;            /* required for length check */
     }
 
     if (list)
@@ -995,7 +994,6 @@ treat_file (char *iname)
 
         method = get_method(ifd);
         if (method < 0) break;    /* error message already emitted */
-        bytes_out = 0;            /* required for length check */
     }
 
     if (close (ifd) != 0)

@@ -117,6 +117,7 @@ unzip (int in, int out)
 {
     ulg orig_crc = 0;       /* original crc */
     ulg orig_len = 0;       /* original uncompressed length */
+    off_t orig_bytes_out = bytes_out;
     int n;
     uch buf[EXTHDR];        /* extended local header */
     int err = OK;
@@ -194,7 +195,7 @@ unzip (int in, int out)
                 program_name, ifname);
         err = ERROR;
     }
-    if (orig_len != (ulg)(bytes_out & 0xffffffff)) {
+    if (orig_len != (ulg)((bytes_out - orig_bytes_out) & 0xffffffff)) {
         fprintf(stderr, "\n%s: %s: invalid compressed data--length error\n",
                 program_name, ifname);
         err = ERROR;

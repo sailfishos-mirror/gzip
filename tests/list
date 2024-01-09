@@ -28,4 +28,13 @@ gzip -l in.gz >out1 || fail=1
 gzip -l in.gz | cat >out2 || fail=1
 compare out1 out2 || fail=1
 
+echo '' >small || framework_failure_
+gzip small || fail=1
+cat small.gz small.gz >smallx2.gz || framework_failure_
+gzip -l smallx2.gz >smallout || fail=1
+case $(cat smallout) in
+  *' 2 '*' smallx2') ;;
+  *) cat smallout; fail=1;;
+esac
+
 Exit $fail

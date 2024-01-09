@@ -2,6 +2,11 @@ GNU gzip NEWS                                    -*- outline -*-
 
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
+** Bug fixes
+
+  'gzip -l' no longer misreports lengths of multimember inputs.
+  [bug introduced in gzip-1.12]
+
 
 * Noteworthy changes in release 1.13 (2023-08-19) [stable]
 
