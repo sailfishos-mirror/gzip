@@ -60,6 +60,7 @@ static char const *const license_msg[] = {
 #include <signal.h>
 #include <stddef.h>
 #include <sys/stat.h>
+#include <getopt.h>
 #include <errno.h>
 
 #include "tailor.h"
@@ -72,7 +73,6 @@ static char const *const license_msg[] = {
 #include "dirname.h"
 #include "fcntl--.h"
 #include "filename.h"
-#include "getopt.h"
 #include "ignore-value.h"
 #include "stat-time.h"
 #include "version.h"
@@ -84,7 +84,6 @@ static char const *const license_msg[] = {
 #include <limits.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <errno.h>
 
 #ifndef NO_DIR
 # define NO_DIR 0
