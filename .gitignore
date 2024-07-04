@@ -21,6 +21,7 @@
 /gzip-*
 /libver.a
 /maint.mk
+/tests/init.sh
 /version.[ch]
 /zcat
 /zcmp
