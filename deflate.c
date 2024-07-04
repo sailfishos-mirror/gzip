@@ -77,6 +77,7 @@
 #include <config.h>
 #include <stdio.h>
 
+#include "deflate.h"
 #include "tailor.h"
 #include "gzip.h"
 #include "lzw.h" /* just for consistency checking */
@@ -185,17 +186,17 @@ static unsigned ins_h;  /* hash index of string to be inserted */
  *   H_SHIFT * MIN_MATCH >= HASH_BITS
  */
 
-       unsigned int near prev_length;
+unsigned int near prev_length;
 /* Length of the best match at previous step. Matches not greater than this
  * are discarded. This is used in the lazy match evaluation.
  */
 
-      unsigned near strstart;      /* start of string to insert */
-      unsigned near match_start;   /* start of matching string */
+unsigned near strstart;      /* start of string to insert */
+unsigned near match_start;   /* start of matching string */
 static int eofile;		   /* flag set at end of input file */
 static unsigned lookahead;	   /* number of valid bytes ahead in window */
 
-       unsigned max_chain_length;
+unsigned max_chain_length;
 /* To speed up deflation, hash chains are never searched beyond this length.
  * A higher limit improves compression ratio but degrades the speed.
  */
