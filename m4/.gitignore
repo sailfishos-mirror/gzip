@@ -159,9 +159,10 @@
 /warn-on-use.m4
 /warnings.m4
 /wchar_h.m4
-/wchar_t.m4
 /wint_t.m4
 /xalloc.m4
 /xsize.m4
 /yesno.m4
 /zzgnulib.m4
+/off64_t.m4
+/sys_cdefs_h.m4
