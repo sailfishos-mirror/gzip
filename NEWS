@@ -7,6 +7,8 @@ GNU gzip NEWS                                    -*- outline -*-
   'gzip -l' no longer misreports lengths of multimember inputs.
   [bug introduced in gzip-1.12]
 
+  'gzip -S' now rejects suffixes containing '/'.
+  [bug present since the beginning]
 
 * Noteworthy changes in release 1.13 (2023-08-19) [stable]
 

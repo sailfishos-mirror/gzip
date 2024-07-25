@@ -316,8 +316,8 @@ will descend into the directory and compress all the files it finds there
 .TP
 .B \-S .suf   \-\-suffix .suf
 When compressing, use suffix .suf instead of .gz.
-Any non-empty suffix can be given, but suffixes
-other than .z and .gz should be avoided to avoid confusion when files
+Although any non-empty suffix can be given so long as it does not contain "/",
+suffixes other than .z and .gz should be avoided to avoid confusion when files
 are transferred to other systems.
 
 When decompressing, add .suf to the beginning of the list of

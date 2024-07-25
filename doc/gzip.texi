@@ -364,10 +364,12 @@ the compressed output is usually about one percent larger.
 
 @item --suffix @var{suf}
 @itemx -S @var{suf}
-Use suffix @var{suf} instead of @samp{.gz}.  Any suffix can be
-given, but suffixes other than @samp{.z} and @samp{.gz} should be
+
+Use suffix @var{suf} instead of @samp{.gz}.
+Although any suffix can be given so long as it does not contain @samp{/},
+suffixes other than @samp{.z} and @samp{.gz} should be
 avoided to avoid confusion when files are transferred to other systems.
-A null suffix forces gunzip to try decompression on all given files
+An empty suffix forces gunzip to try decompression on all given files
 regardless of suffix, as in:
 
 @example

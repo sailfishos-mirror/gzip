@@ -564,7 +564,12 @@ int main (int argc, char **argv)
 #ifdef NO_MULTIPLE_DOTS
             if (*optarg == '.') optarg++;
 #endif
-            z_len = strlen(optarg);
+            for (z_len = 0; optarg[z_len]; z_len++)
+              if (optarg[z_len] == '/')
+                {
+                  fprintf (stderr, "%s: suffix contains '/'\n", program_name);
+                  do_exit (ERROR);
+                }
             z_suffix = optarg;
             break;
         case SYNCHRONOUS_OPTION:
