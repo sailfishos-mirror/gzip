@@ -470,34 +470,3 @@ display_ratio (off_t num, off_t den, FILE *file)
 {
     fprintf(file, "%5.1f%%", den == 0 ? 0 : 100.0 * num / den);
 }
-
-/* ========================================================================
- * Print an off_t.  There's no completely portable way to use printf,
- * so we do it ourselves.
- */
-void
-fprint_off (FILE *file, off_t offset, int width)
-{
-    char buf[CHAR_BIT * sizeof (off_t)];
-    char *p = buf + sizeof buf;
-
-    /* Don't negate offset here; it might overflow.  */
-    if (offset < 0) {
-        do
-          *--p = '0' - offset % 10;
-        while ((offset /= 10) != 0);
-
-        *--p = '-';
-    } else {
-        do
-          *--p = '0' + offset % 10;
-        while ((offset /= 10) != 0);
-    }
-
-    width -= buf + sizeof buf - p;
-    while (0 < width--) {
-        putc (' ', file);
-    }
-    for (;  p < buf + sizeof buf;  p++)
-        putc (*p, file);
-}

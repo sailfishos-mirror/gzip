@@ -82,6 +82,7 @@ static char const *const license_msg[] = {
                 /* configuration */
 
 #include <limits.h>
+#include <inttypes.h>
 #include <unistd.h>
 #include <stdlib.h>
 
@@ -1747,12 +1748,9 @@ do_list (int method)
         if (verbose) {
             printf("                            ");
         }
-        if (verbose || !quiet) {
-            fprint_off(stdout, total_in, positive_off_t_width);
-            printf(" ");
-            fprint_off(stdout, total_out, positive_off_t_width);
-            printf(" ");
-        }
+        if (verbose || !quiet)
+          printf ("%*jd %*jd ", positive_off_t_width, (intmax_t) total_in,
+                  positive_off_t_width, (intmax_t) total_out);
         display_ratio(total_out-(total_in-header_bytes), total_out, stdout);
         /* header_bytes is not meaningful but used to ensure the same
          * ratio if there is a single file.
@@ -1779,10 +1777,8 @@ do_list (int method)
         else
           printf ("??? ?? ??:?? ");
       }
-    fprint_off(stdout, bytes_in, positive_off_t_width);
-    printf(" ");
-    fprint_off(stdout, bytes_out, positive_off_t_width);
-    printf(" ");
+    printf ("%*jd %*jd ", positive_off_t_width, (intmax_t) bytes_in,
+            positive_off_t_width, (intmax_t) bytes_out);
     if (bytes_in  == -1L) {
         total_in = -1L;
         bytes_in = bytes_out = header_bytes = 0;
