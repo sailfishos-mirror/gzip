@@ -32,10 +32,6 @@
 #include <dirname.h>
 #include <xalloc.h>
 
-#ifndef CHAR_BIT
-#  define CHAR_BIT 8
-#endif
-
 #ifndef EPIPE
 # define EPIPE 0
 #endif

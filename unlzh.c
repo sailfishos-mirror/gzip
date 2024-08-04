@@ -4,6 +4,7 @@
  */
 
 #include <config.h>
+#include <limits.h>
 #include <stdio.h>
 
 #include "tailor.h"
@@ -34,14 +35,6 @@ static void make_table (int nchar, uch bitlen[], int tablebits, ush table[]);
 
 #define DICBIT    13    /* 12(-lh4-) or 13(-lh5-) */
 #define DICSIZ ((unsigned) 1 << DICBIT)
-
-#ifndef CHAR_BIT
-#  define CHAR_BIT 8
-#endif
-
-#ifndef UCHAR_MAX
-#  define UCHAR_MAX 255
-#endif
 
 #define BITBUFSIZ (CHAR_BIT * 2 * sizeof(char))
 /* Do not use CHAR_BIT * sizeof(bitbuf), does not work on machines

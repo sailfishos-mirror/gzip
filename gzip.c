@@ -106,10 +106,6 @@ static char const *const license_msg[] = {
 #  define SEEK_END 2
 #endif
 
-#ifndef CHAR_BIT
-#  define CHAR_BIT 8
-#endif
-
 #ifdef off_t
   off_t lseek (int fd, off_t offset, int whence);
 #endif
