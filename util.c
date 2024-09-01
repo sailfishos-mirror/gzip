@@ -25,7 +25,6 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdlib.h>
-#include <errno.h>
 
 #include "tailor.h"
 #include "gzip.h"
