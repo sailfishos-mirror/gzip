@@ -138,7 +138,7 @@ unzip (int in, int out)
 #ifdef IBM_Z_DFLTCC
         int res = dfltcc_inflate ();
 #else
-        int res = inflate();
+        int res = gzip_inflate ();
 #endif
 
         if (res == 3) {

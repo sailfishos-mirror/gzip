@@ -178,7 +178,7 @@ static ush cpdext[] = {         /* Extra bits for distance codes */
 
 
 
-/* Macros for inflate() bit peeking and grabbing.
+/* Macros for gzip_inflate () bit peeking and grabbing.
    The usage is:
 
         NEEDBITS(j)
@@ -514,7 +514,7 @@ huft_free(struct huft *t)
 
 /* tl, td:   literal/length and distance decoder tables */
 /* bl, bd:   number of bits decoded by tl[] and td[] */
-/* inflate (decompress) the codes in a deflated (compressed) block.
+/* gzip_inflate (decompress) the codes in a deflated (compressed) block.
    Return an error code or zero if it all goes ok. */
 static int
 inflate_codes(struct huft *tl, struct huft *td, int bl, int bd)
@@ -955,7 +955,7 @@ static int inflate_block(int *e)
 
 
 int
-inflate ()
+gzip_inflate ()
 /* decompress an inflated entry */
 {
   int e;                /* last block flag */
