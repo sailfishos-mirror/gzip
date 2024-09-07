@@ -15,13 +15,14 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 TESTS =					\
+  list-big				\
   gzip-env				\
+  reference				\
   helin-segv				\
   help-version				\
   hufts					\
   keep					\
   list					\
-  list-big				\
   memcpy-abuse				\
   mixed					\
   null-suffix-clobber			\
