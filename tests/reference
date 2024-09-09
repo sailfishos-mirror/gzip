@@ -43,7 +43,7 @@ EOF
 # If using "od" is not portable enough, consider using this:
 # perl -ne 'printf "%02x ", ord($_) for split //'
 for i in '' a b c yyy zzzzzzzzzzz; do
-  echo $i: $(printf %s "$i" | gzip | od -w99 -An -tx1)
+  echo $i: $(printf %s "$i" | gzip | od -An -tx1 | tr -d '\n')
 done > out || framework_failure_
 
 compare exp out || fail=1
