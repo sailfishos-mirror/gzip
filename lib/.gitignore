@@ -23,6 +23,8 @@
 /closedir.c
 /config.h
 /config.hin
+/crc.c
+/crc.h
 /creat-safer.c
 /dirent--.h
 /dirent-private.h
@@ -233,6 +235,7 @@
 /vasnprintf.h
 /verify.h
 /vfprintf.c
+/vfzprintf.c
 /warn-on-use.h
 /wchar.h
 /wchar.in.h
@@ -244,4 +247,3 @@
 /xsize.h
 /yesno.c
 /yesno.h
-/vfzprintf.c
