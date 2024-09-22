@@ -142,7 +142,7 @@ while test $# -ne 0; do
         /*) TMPDIR=$TMPDIR/;;
         *) TMPDIR=/tmp/;;
       esac
-      if type mktemp >/dev/null 2>&1; then
+      if command -v mktemp >/dev/null 2>&1; then
         pattmp=$(mktemp "${TMPDIR}zgrepXXXXXXXXX") || exit 2
       else
         set -C

@@ -116,7 +116,7 @@ for i do
   test -d "$dir" && test -w "$dir" && test -x "$dir" || dir=/tmp
   test -n "$tmp" && rm -f "$tmp"
   if test -z "$mktemp_status"; then
-    type mktemp >/dev/null 2>&1
+    command -v mktemp >/dev/null 2>&1
     mktemp_status=$?
   fi
   case $dir in
@@ -166,7 +166,7 @@ case $TMPDIR in
   /*) TMPDIR=$TMPDIR/;;
   *) TMPDIR=/tmp/;;
 esac
-if type mktemp >/dev/null 2>&1; then
+if command -v mktemp >/dev/null 2>&1; then
   gztmpdir=`mktemp -d "${TMPDIR}gztmpXXXXXXXXX"`
 else
   gztmpdir=${TMPDIR}gztmp$$; mkdir $gztmpdir

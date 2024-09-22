@@ -155,7 +155,7 @@ case $file2 in
                           /*) TMPDIR=$TMPDIR/;;
                           *) TMPDIR=/tmp/;;
                         esac
-                        if type mktemp >/dev/null 2>&1; then
+                        if command -v mktemp >/dev/null 2>&1; then
                           tmp=`mktemp "${TMPDIR}zdiffXXXXXXXXX"` ||
                             exit 2
                         else
