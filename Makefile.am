@@ -47,7 +47,7 @@ EXTRA_DIST = $(ACINCLUDE_INPUTS) $(man_MANS) \
   dist-check.mk	\
   algorithm.doc \
   gunzip.in gzexe.in gzip.doc \
-  revision.h sample/makecrc.c \
+  revision.h \
   sample/ztouch sample/add.c sample/sub.c sample/zread.c sample/zfile \
   tailor.h \
   zcat.in zcmp.in zdiff.in \
