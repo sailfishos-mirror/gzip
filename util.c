@@ -233,7 +233,7 @@ strlwr (char *s)
 {
     char *t;
     for (t = s; *t; t++)
-      *t = tolow ((unsigned char) *t);
+      *t = tolower ((unsigned char) *t);
     return s;
 }
 

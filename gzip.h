@@ -226,8 +226,6 @@ extern int save_orig_name; /* set if original name must be saved */
 #define seekable()    0  /* force sequential output */
 #define translate_eol 0  /* no option -a yet */
 
-#define tolow(c)  (isupper (c) ? tolower (c) : (c))  /* force to lower case */
-
 /* Macros for getting two-byte and four-byte header values */
 #define SH(p) ((ush)(uch)((p)[0]) | ((ush)(uch)((p)[1]) << 8))
 #define LG(p) ((ulg)(SH(p)) | ((ulg)(SH((p)+2)) << 16))

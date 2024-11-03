@@ -54,7 +54,7 @@
 #  define Z_SUFFIX "z"
 #  define NO_SIZE_CHECK
 #  define UNLINK_READONLY_BUG
-#  define casemap(c) tolow(c) /* Force file names to lower case */
+#  define casemap(c) tolower(c) /* Force file names to lower case */
 #  include <io.h>
 #  define OS_CODE  0x00
 #  define SET_BINARY_MODE(fd) setmode(fd, O_BINARY)
@@ -71,7 +71,7 @@
 #    define NO_MULTIPLE_DOTS
 #    define MAX_EXT_CHARS 3
 #    define Z_SUFFIX "z"
-#    define casemap(c) tolow(c)
+#    define casemap(c) tolower(c)
 #  endif
 #  define UNLINK_READONLY_BUG
 #  include <io.h>
@@ -107,7 +107,7 @@
 #    define NO_MULTIPLE_DOTS
 #    define MAX_EXT_CHARS 3
 #    define Z_SUFFIX "z"
-#    define casemap(c) tolow(c) /* Force file names to lower case */
+#    define casemap(c) tolower(c) /* Force file names to lower case */
 #  endif
 #  define OS_CODE  0x0b
 #endif
@@ -140,7 +140,7 @@
 #    define NO_MULTIPLE_DOTS
 #    define MAX_EXT_CHARS 3
 #    define Z_SUFFIX "z"
-#    define casemap(c) tolow(c) /* Force file names to lower case */
+#    define casemap(c) tolower(c) /* Force file names to lower case */
 #  endif
 #endif
 
