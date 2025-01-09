@@ -29,6 +29,7 @@ TESTS =					\
   pipe-output				\
   reproducible				\
   stdin					\
+  synchronous				\
   timestamp				\
   two-files				\
   trailing-nul				\
