@@ -3,6 +3,8 @@
 /alloca.m4
 /asm-underscore.m4
 /assert_h.m4
+/build-cc.m4
+/byteswap.m4
 /c-bool.m4
 /calloc.m4
 /chdir-long.m4
@@ -10,17 +12,20 @@
 /close.m4
 /closedir.m4
 /codeset.m4
+/crc.m4
 /dirent_h.m4
 /dirfd.m4
 /double-slash-root.m4
 /dup.m4
 /dup2.m4
+/endian_h.m4
 /errno_h.m4
 /error.m4
 /error_h.m4
 /exponentd.m4
 /exponentf.m4
 /exponentl.m4
+/extensions-aix.m4
 /extensions.m4
 /extern-inline.m4
 /fchdir.m4
@@ -71,7 +76,7 @@
 /ldexpl.m4
 /lib-ignore.m4
 /limits-h.m4
-/locale-fr.m4
+/locale-en.m4
 /locale-ja.m4
 /locale-zh.m4
 /lseek.m4
@@ -135,6 +140,7 @@
 /strdup.m4
 /strerror.m4
 /string_h.m4
+/sys_cdefs_h.m4
 /sys_socket_h.m4
 /sys_stat_h.m4
 /sys_time_h.m4
@@ -162,5 +168,3 @@
 /xsize.m4
 /yesno.m4
 /zzgnulib.m4
-/off64_t.m4
-/sys_cdefs_h.m4

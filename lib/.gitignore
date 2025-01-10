@@ -13,6 +13,8 @@
 /attribute.h
 /basename-lgpl.c
 /basename-lgpl.h
+/byteswap.c
+/byteswap.in.h
 /c++defs.h
 /calloc.c
 /chdir-long.c
@@ -23,6 +25,7 @@
 /closedir.c
 /config.h
 /config.hin
+/crc-generate-table.c
 /crc.c
 /crc.h
 /creat-safer.c
@@ -35,6 +38,8 @@
 /dup-safer.c
 /dup.c
 /dup2.c
+/endian.c
+/endian.in.h
 /errno.h
 /errno.in.h
 /error.c
@@ -195,6 +200,7 @@
 /stdio-write.c
 /stdio.h
 /stdio.in.h
+/stdlib.c
 /stdlib.h
 /stdlib.in.h
 /stpcpy.c
