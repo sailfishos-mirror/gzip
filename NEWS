@@ -4,6 +4,10 @@ GNU gzip NEWS                                    -*- outline -*-
 
 ** Bug fixes
 
+  'gzip -d' no longer omits the last partial output buffer when the
+  input ends unexpectedly on an IBM Z platform.
+  [bug introduced in gzip-1.11]
+
   'gzip -l' no longer misreports lengths of multimember inputs.
   [bug introduced in gzip-1.12]
 

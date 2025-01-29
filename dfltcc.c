@@ -434,11 +434,7 @@ dfltcc_inflate ()
         flush_outbuf ();
       if (inptr == insize)
         {
-          if (fill_inbuf (1) == EOF)
-            {
-              /* Premature EOF.  */
-              return 2;
-            }
+          fill_inbuf (0);
           inptr = 0;
         }
 
