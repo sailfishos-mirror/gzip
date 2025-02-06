@@ -80,7 +80,6 @@
 #include "tailor.h"
 #include "gzip.h"
 #include "lzw.h" /* just for consistency checking */
-#include "verify.h"
 
 /* ===========================================================================
  * Configuration parameters
@@ -131,7 +130,7 @@
 #ifndef RSYNC_WIN
 #  define RSYNC_WIN 4096
 #endif
-verify(RSYNC_WIN < MAX_DIST);
+static_assert (RSYNC_WIN < MAX_DIST);
 
 #define RSYNC_SUM_MATCH(sum) ((sum) % RSYNC_WIN == 0)
 /* Whether window sum matches magic value */
