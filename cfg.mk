@@ -104,5 +104,8 @@ export _gl_TS_unmarked_extern_vars = \
 
 _gl_TS_extern = (?:_Noreturn )?extern
 
+# Write base64-encoded (not hex) checksums into the announcement.
+announce_gen_args = --cksum-checksums
+
 # Add an exemption for sc_makefile_at_at_check.
 _makefile_at_at_check_exceptions = ' && !/MAKEINFO/'
