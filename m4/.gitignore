@@ -12,6 +12,7 @@
 /close.m4
 /closedir.m4
 /codeset.m4
+/crc-x86_64.m4
 /crc.m4
 /dirent_h.m4
 /dirfd.m4

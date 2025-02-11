@@ -14,6 +14,7 @@
 /basename-lgpl.c
 /basename-lgpl.h
 /byteswap.c
+/byteswap.h
 /byteswap.in.h
 /c++defs.h
 /calloc.c
@@ -26,6 +27,9 @@
 /config.h
 /config.hin
 /crc-generate-table.c
+/crc-sliceby8.h
+/crc-x86_64-pclmul.c
+/crc-x86_64.h
 /crc.c
 /crc.h
 /creat-safer.c
@@ -39,6 +43,7 @@
 /dup.c
 /dup2.c
 /endian.c
+/endian.h
 /endian.in.h
 /errno.h
 /errno.in.h

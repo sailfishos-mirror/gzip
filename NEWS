@@ -14,6 +14,13 @@ GNU gzip NEWS                                    -*- outline -*-
   'gzip -S' now rejects suffixes containing '/'.
   [bug present since the beginning]
 
+** Performance improvements
+
+  gzip now decompresses significantly faster by computing CRCs via a
+  slice by 8 algorithm, and faster yet on x86-64 platforms that
+  support pclmul instructions.
+
+
 * Noteworthy changes in release 1.13 (2023-08-19) [stable]
 
 ** Changes in behavior
