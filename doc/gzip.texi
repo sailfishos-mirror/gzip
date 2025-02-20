@@ -487,15 +487,16 @@ complement to @command{tar}, not as a replacement.
 @chapter Environment
 @cindex Environment
 
-The obsolescent environment variable @env{GZIP} can hold a set of
+The environment variable @env{GZIP} can hold a set of
 default options for @command{gzip}.  These options are interpreted
-first and can be overwritten by explicit command line parameters.  As
+first and can be overridden by explicit command line parameters.  As
 this can cause problems when using scripts, this feature is supported
-only for options that are reasonably likely to not cause too much
-harm, and @command{gzip} warns if it is used.  This feature will be
-removed in a future release of @command{gzip}.
+only for @option{--rsyncable}, @option{--synchronous}, and
+options like @option{-9} that set the compression level;
+any other options or operands in @env{GZIP} are silently ignored.
 
-You can use an alias or script instead.  For example, if
+You can use an alias or script instead.  For example,
+instead of setting @samp{GZIP="-9"} in the environment, if
 @command{gzip} is in the directory @samp{/usr/bin} you can prepend
 @file{$HOME/bin} to your @env{PATH} and create an executable script
 @file{$HOME/bin/gzip} containing the following:

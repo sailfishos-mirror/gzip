@@ -14,6 +14,15 @@ GNU gzip NEWS                                    -*- outline -*-
   'gzip -S' now rejects suffixes containing '/'.
   [bug present since the beginning]
 
+** Changes in behavior
+
+  The GZIP environment variable is now silently ignored except for the
+  options -1 (--fast) through -9 (--best), --rsyncable, and --synchronous.
+  This brings gzip into line with more-cautious compressors like zstd
+  that limit environment variables' effect to relatively innocuous
+  performance issues.  You can continue to use scripts to specify
+  whatever gzip options you like.
+
 ** Performance improvements
 
   gzip now decompresses significantly faster by computing CRCs via a

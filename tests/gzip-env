@@ -1,5 +1,5 @@
 #!/bin/sh
-# Test the obsolescent GZIP environment variable.
+# Test the GZIP environment variable.
 
 # Copyright 2015-2025 Free Software Foundation, Inc.
 
@@ -27,14 +27,18 @@ GZIP=-qv gzip -d <in >out 2>err || fail=1
 compare exp out || fail=1
 
 for badopt in -- -c --stdout -d --decompress -f --force -h --help -k --keep \
-  -l --list -L --license -r --recursive -Sxxx --suffix=xxx '--suffix xxx' \
-  -t --test -V --version
+  -l --list -L --license -n --no-name -N --name -q --quiet \
+  -r --recursive -Sxxx --suffix=xxx '--suffix xxx' \
+  -t --test -v --verbose -V --version
 do
-  GZIP=$badopt gzip -d <in >out 2>err && fail=1
+  GZIP=$badopt gzip <exp >inagain 2>err || fail=1
+  compare in inagain
+  GZIP=$badopt gzip -d <in >out 2>err || fail=1
+  compare exp out || fail=1
 done
 
-for goodopt in -n --no-name -N --name -q --quiet -v --verbose \
-  -1 --fast -2 -3 -4 -5 -6 -7 -8 -9 --best
+for goodopt in \
+  -1 --fast -2 -3 -4 -5 -6 -7 -8 -9 --best --rsyncable --synchronous
 do
   GZIP=$goodopt gzip -d <in >out 2>err || fail=1
   compare exp out || fail=1

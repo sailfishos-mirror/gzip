@@ -55,7 +55,8 @@ new=0
 block=1024
 # block is the disk block size (best guess, need not be exact)
 
-# Beware -s or --suffix in $GZIP.
+# Beware -s or --suffix in $GZIP, which could cause misbehavior
+# in gzip 1.13 and earlier.
 unset GZIP
 ext=.gz
 

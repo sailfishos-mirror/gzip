@@ -416,22 +416,21 @@ such as tar or zip.
 GNU tar supports the \-z option to invoke gzip transparently.
 gzip is designed as a complement to tar, not as a replacement.
 .SH "ENVIRONMENT"
-The obsolescent environment variable
+The environment variable
 .B GZIP
 can hold a set of default options for
 .BR gzip .
-These options are interpreted first and can be overwritten by explicit
+These options are interpreted first and can be overridden by explicit
 command line parameters.
 As this can cause problems when using scripts,
-this feature is supported only for options that are
-reasonably likely to not cause too much harm, and
-.B gzip
-warns if it is used.
-This feature will be removed in a future release of
-.BR gzip .
+this feature is supported only for \-\-rsyncable, \-\-synchronous,
+and options like \-9 that set the compression level;
+any other options or operands in
+.B GZIP
+are silently ignored.
 .PP
 You can use an alias or script instead.
-For example, if
+For example, instead of setting GZIP="\-9" in the environment, if
 .B gzip
 is in the directory
 .B /usr/bin
