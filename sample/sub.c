@@ -11,7 +11,7 @@
    bytes.  For example, if the data are 16-bit sound samples, then you
    can use "sub 2" to take differences on the low-byte stream and the
    high-byte stream.  (This gives nearly the same effect as subtracting
-   the 16-bit values, but avoids the complexities of endianess of the
+   the 16-bit values, but avoids the complexities of endianness of the
    data.)  The concept extends to RGB image data (sub 3), 16-bit stereo
    data (sub 4), floating point data (sub 4 or sub 8), etc.
 

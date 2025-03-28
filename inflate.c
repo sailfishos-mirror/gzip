@@ -45,7 +45,7 @@
    There are (currently) three kinds of inflate blocks: stored, fixed, and
    dynamic.  The compressor deals with some chunk of data at a time, and
    decides which method to use on a chunk-by-chunk basis.  A chunk might
-   typically be 32K or 64K.  If the chunk is uncompressible, then the
+   typically be 32K or 64K.  If the chunk is incompressible, then the
    "stored" method is used.  In this case, the bytes are simply stored as
    is, eight bits per byte, with none of the above coding.  The bytes are
    preceded by a count, since there is no longer an EOB code.

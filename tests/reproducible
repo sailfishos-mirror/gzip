@@ -1,5 +1,5 @@
 #!/bin/sh
-# Ensure that gzip has repoducible output.
+# Ensure that gzip has reproducible output.
 
 # Copyright 2018-2025 Free Software Foundation, Inc.
 

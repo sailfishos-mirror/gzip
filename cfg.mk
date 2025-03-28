@@ -40,7 +40,7 @@ bootstrap-tools = autoconf,automake,gnulib
 # Now that we have better tests, make this the default.
 export VERBOSE = yes
 
-old_NEWS_hash = 9668c8800ddd8a0cc1b43dcc88b21f6a
+old_NEWS_hash = 8cca4d49b48b57068fd641b8efc68337
 
 sc_obs_header_regex = \
   \<(STDC_HEADERS|HAVE_(LIMITS|STRING|UNISTD|STDLIB)_H)\>
@@ -109,3 +109,6 @@ announce_gen_args = --cksum-checksums
 
 # Add an exemption for sc_makefile_at_at_check.
 _makefile_at_at_check_exceptions = ' && !/MAKEINFO/'
+
+exclude_file_name_regexp--sc_codespell = ^(THANKS)$$
+codespell_ignore_words_list = nd,siz

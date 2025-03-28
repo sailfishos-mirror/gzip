@@ -456,7 +456,7 @@
 	Invoke chown before chmod, to close a race condition.
 
 	* .cvsignore: Add *.doc, build-aux.
-	* doc/.cvignore: New file.
+	* doc/.cvsignore: New file.
 	* lib/.cvsignore: New file.
 	* m4/.cvsignore: New file.
 
@@ -522,7 +522,7 @@
 
 2006-11-25  Paul Eggert  <eggert@cs.ucla.edu>
 
-	* gzip.1 (OPTIONS): ouput -> output.  Problem reported by Matt
+	* gzip.1 (OPTIONS): output -> output.  Problem reported by Matt
 	Taggart.
 	* vms/gzip.hlp: Likewise.
 
@@ -1013,7 +1013,7 @@
 	(AC_DYNIX_SEQ, AC_XENIX_DIR, AC_DIR_HEADER): Remove; superseded by
 	AC_HEADER_DIRENT.
 	* tailor.h (HAVE_DIRENT_H, HAVE_SYS_DIR_H):
-	Define instad of DIRENT, SYSDIR.
+	Define instead of DIRENT, SYSDIR.
 	* gzip.c (NAMLEN): Renamed from NLENGTH. Depend on Autoconf 2.13 names
 	HAVE_DIRENT_H, HAVE_SYS_NDIR_H, HAVE_SYS_DIR_H, HAVE_NDIR_H
 	instead of the oldfashioned names DIRENT, SYSDIR, SYSNDIR, NDIR.
@@ -1312,7 +1312,7 @@ Fri Jun  4 09:49:33 1993  Jean-loup Gailly  (jloup@chorus.fr)
 	 Do not display compression ratio when decompressing stdin.
 	 In zmore.in, work around brain damaged stty -g (Ultrix).
 	 Display a correct compression ratio for .Z files.
-	 Added .z to .gz renaming script in INTALL.
+	 Added .z to .gz renaming script in INSTALL.
 	 Allow setting CFLAGS in configure.
 	 Add warning in README about bug in Concentrix cc compiler.
 	 Avoid || in Makefile.in (at least one make doesn't support this).
@@ -1390,7 +1390,7 @@ Fri May 28 11:40:01 1993  Jean-loup Gailly  (jloup@chorus.fr)
 	 Avoid warnings in getopt.c, util.c, unlzw.c.
 	 Use autoconf 1.4, in particular for INSTALL and AC_HAVE_POUNDBANG
 	 Use .so instead of hard links for zcat.1, gunzip.1 and zcmp.1.
-	 Fixed declration of sig_type.
+	 Fixed declaration of sig_type.
 	 Make consistency check in fcfree.
 	 Added ztouch.
 	 Do not complain if utime fails on a directory (for OS/2).
