@@ -23,6 +23,8 @@ GNU gzip NEWS                                    -*- outline -*-
   performance issues.  You can continue to use scripts to specify
   whatever gzip options you like.
 
+  'zmore' is no longer installed on platforms lacking 'more'.
+
 ** Performance improvements
 
   gzip now decompresses significantly faster by computing CRCs via a

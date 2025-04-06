@@ -58,6 +58,12 @@ else
 ZLESS_PROG =
 endif
 
+if MORE
+ZMORE_PROG = zmore
+else
+ZMORE_PROG =
+endif
+
 built_programs = \
   gzip		\
   gunzip	\
@@ -70,7 +76,7 @@ built_programs = \
   zforce	\
   zgrep		\
   $(ZLESS_PROG)	\
-  zmore		\
+  $(ZMORE_PROG)	\
   znew
 
 TESTS_ENVIRONMENT =					\
