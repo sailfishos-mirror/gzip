@@ -28,6 +28,8 @@
 
 . "${srcdir=.}/init.sh"; path_prepend_ ..
 
+od -An -tx1 </dev/null || skip_ "od does not support -An and -tx1"
+
 fail=0
 
 cat <<EOF > exp || framework_failure_
@@ -40,10 +42,8 @@ zzzzzzzzzzz: 1f 8b 08 00 00 00 00 00 00 03 ab aa 82 03 00 55 97 5b a7 0b 00 00 0
 EOF
 
 # Ensure that compressing these simple strings always produces the same bytes.
-# If using "od" is not portable enough, consider using this:
-# perl -ne 'printf "%02x ", ord($_) for split //'
 for i in '' a b c yyy zzzzzzzzzzz; do
-  echo $i: $(printf %s "$i" | gzip | od -An -tx1 | tr -d '\n')
+  echo $i: $(printf %s "$i" | gzip | od -An -tx1)
 done > out || framework_failure_
 
 compare exp out || fail=1
