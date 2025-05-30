@@ -1609,7 +1609,7 @@ get_method (int in)
             header_bytes = inptr + 2*4; /* include crc and size */
         }
 
-    } else if (memcmp(magic, PKZIP_MAGIC, 2) == 0 && inptr == 2
+    } else if (4 <= insize
             && memcmp((char*)inbuf, PKZIP_MAGIC, 4) == 0) {
         /* To simplify the code, we support a zip file when alone only.
          * We are thus guaranteed that the entire local header fits in inbuf.
