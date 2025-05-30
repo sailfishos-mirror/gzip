@@ -103,6 +103,11 @@ void clear_bufs()
     bytes_in = bytes_out = 0L;
 }
 
+/* fill_inbuf callers convert EOF to unsigned and back.
+   Although this is a no-op on all known platforms, C does not guarantee it.
+   Add a static check to be safer.  */
+static_assert ((int) (unsigned) EOF == EOF);
+
 /* ===========================================================================
  * Fill the input buffer. This is called only when the buffer is empty.
  * EOF_OK is set if EOF acceptable as a result.

@@ -1461,7 +1461,11 @@ get_method (int in, bool first)
         magic[0] = imagic0;
         imagic1 = try_byte ();
         magic[1] = imagic1;
-        /* If try_byte returned EOF, magic[1] == (char) EOF.  */
+        /* If try_byte returned EOF, magic[1] == (char) EOF.
+           Although POSIX says this could cause gzip to trap
+           if EOF < CHAR_MIN < 0, no known platform is like that;
+           check to be safe.  */
+        static_assert (! (EOF < CHAR_MIN && CHAR_MIN < 0));
     } else {
         magic[0] = get_byte ();
         imagic0 = 0;

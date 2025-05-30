@@ -336,8 +336,9 @@ lm_init (int pack_level)
     match_init(); /* initialize the asm code */
 #endif
 
-    lookahead = read_buf((char*)window,
-                         sizeof(int) <= 2 ? (unsigned)WSIZE : 2*WSIZE);
+#define READ_BUF_SIZE (sizeof (int) <= 2 ? (unsigned) WSIZE : 2 * WSIZE)
+    static_assert (READ_BUF_SIZE < (unsigned) EOF);
+    lookahead = read_buf ((char *) window, READ_BUF_SIZE);
 
     if (lookahead == 0 || lookahead == (unsigned)EOF) {
        eofile = 1, lookahead = 0;
@@ -537,11 +538,12 @@ fill_window ()
     /* If the window is almost full and there is insufficient lookahead,
      * move the upper half to the lower one to make room in the upper half.
      */
-    if (more == (unsigned)EOF) {
+    if ((unsigned) EOF <= more) {
         /* Very unlikely, but possible on 16 bit machine if strstart == 0
          * and lookahead == 1 (input done one byte at time)
          */
-        more--;
+        static_assert (2 < (unsigned) EOF);
+        more = (unsigned) EOF - 1;
     } else if (strstart >= WSIZE+MAX_DIST) {
         /* By the IN assertion, the window is not empty so we can't confuse
          * more == 0 with more == 64K on a 16 bit machine.
