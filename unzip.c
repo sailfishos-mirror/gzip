@@ -69,7 +69,9 @@ check_zipfile (int in)
     ifd = in;
 
     /* Check validity of local header, and skip name and extra fields */
-    inptr += LOCHDR + SH(h + LOCFIL) + SH(h + LOCEXT);
+    inptr += LOCHDR;
+    if (inptr <= insize)
+      inptr += SH(h + LOCFIL) + SH(h + LOCEXT);
 
     if (inptr > insize || LG(h) != LOCSIG) {
         fprintf(stderr, "\n%s: %s: not a valid zip file\n",

@@ -2,6 +2,11 @@ GNU gzip NEWS                                    -*- outline -*-
 
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
+** Bug fixes
+
+  A use of uninitialized memory on some malformed inputs has been fixed.
+  [bug present since the beginning]
+
 
 * Noteworthy changes in release 1.14 (2025-04-09) [stable]
 
