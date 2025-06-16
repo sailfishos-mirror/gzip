@@ -799,7 +799,7 @@ inflate_dynamic(void)
     return i;                   /* incomplete code set */
   }
 
-  if (tl == NULL)		/* Grrrhhh */
+  if (tl == NULL)       /* Grrrhhh */
         return 2;
 
   /* read in literal and distance code lengths */

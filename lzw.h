@@ -21,7 +21,7 @@
 #endif
 #define INIT_BITS 9              /* Initial number of bits per code */
 
-#define	LZW_MAGIC  "\037\235"   /* Magic header for lzw files, 1F 9D */
+#define LZW_MAGIC  "\037\235"   /* Magic header for lzw files, 1F 9D */
 
 #define BIT_MASK    0x1f /* Mask for 'number of compression bits' */
 /* Mask 0x20 is reserved to mean a fourth header byte, and 0x40 is free.
@@ -40,7 +40,7 @@
 
 #define LZW_RESERVED 0x60 /* reserved bits */
 
-#define	CLEAR  256       /* flush the dictionary */
+#define CLEAR  256       /* flush the dictionary */
 #define FIRST  (CLEAR+1) /* first free entry */
 
 extern int maxbits;      /* max bits per code for LZW */

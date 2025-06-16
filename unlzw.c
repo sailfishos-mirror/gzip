@@ -22,33 +22,33 @@ typedef unsigned long count_int;
 typedef unsigned short count_short;
 typedef unsigned long cmp_code_int;
 
-#define MAXCODE(n)	(1L << (n))
+#define MAXCODE(n)  (1L << (n))
 
-#ifndef	BYTEORDER
-#	define	BYTEORDER	0000
+#ifndef BYTEORDER
+#   define  BYTEORDER   0000
 #endif
 
-#ifndef	NOALLIGN
-#	define	NOALLIGN	0
+#ifndef NOALLIGN
+#   define  NOALLIGN    0
 #endif
 
 
-union	bytes {
+union  bytes {
     long  word;
     struct {
 #if BYTEORDER == 4321
-        char_type	b1;
-        char_type	b2;
-        char_type	b3;
-        char_type	b4;
+        char_type   b1;
+        char_type   b2;
+        char_type   b3;
+        char_type   b4;
 #else
 #if BYTEORDER == 1234
-        char_type	b4;
-        char_type	b3;
-        char_type	b2;
-        char_type	b1;
+        char_type   b4;
+        char_type   b3;
+        char_type   b2;
+        char_type   b1;
 #else
-#	undef	BYTEORDER
+#   undef   BYTEORDER
         int  dummy;
 #endif
 #endif
@@ -72,13 +72,13 @@ union	bytes {
 #ifndef MAXSEG_64K
    /* DECLARE(ush, tab_prefix, (1<<BITS)); -- prefix code */
 #  define tab_prefixof(i) tab_prefix[i]
-#  define clear_tab_prefixof()	memzero(tab_prefix, 256);
+#  define clear_tab_prefixof()  memzero(tab_prefix, 256);
 #else
    /* DECLARE(ush, tab_prefix0, (1<<(BITS-1)); -- prefix for even codes */
    /* DECLARE(ush, tab_prefix1, (1<<(BITS-1)); -- prefix for odd  codes */
    ush *tab_prefix[2];
 #  define tab_prefixof(i) tab_prefix[(i)&1][(i)>>1]
-#  define clear_tab_prefixof()	\
+#  define clear_tab_prefixof()  \
       memzero(tab_prefix0, 128), \
       memzero(tab_prefix1, 128);
 #endif
@@ -241,7 +241,7 @@ unlzw (int in, int out)
                 *--stackp = tab_suffixof(code);
                 code = tab_prefixof(code);
             }
-            *--stackp =	(char_type)(finchar = tab_suffixof(code));
+            *--stackp = (char_type)(finchar = tab_suffixof(code));
 
             /* And put them out in forward order */
             {
@@ -273,7 +273,7 @@ unlzw (int in, int out)
                 tab_suffixof(code) = (char_type)finchar;
                 free_ent = code+1;
             }
-            oldcode = incode;	/* Remember previous code.	*/
+            oldcode = incode;   /* Remember previous code.  */
         }
     } while (rsize != 0);
 
