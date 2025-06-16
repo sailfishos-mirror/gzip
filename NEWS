@@ -4,6 +4,10 @@ GNU gzip NEWS                                    -*- outline -*-
 
 ** Bug fixes
 
+  gzip -d no longer rejects PKZIP signatures, local header, and data
+  descriptors.  These can appear in well-formed albeit unusual pigz output.
+  [bug present since the beginning]
+
   A use of uninitialized memory on some malformed inputs has been fixed.
   [bug present since the beginning]
 
