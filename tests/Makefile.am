@@ -36,6 +36,7 @@ TESTS =					\
   unpack-invalid			\
   unpack-valid				\
   upper-suffix				\
+  unzip-valid				\
   write-error				\
   z-suffix				\
   zdiff					\
