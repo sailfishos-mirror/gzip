@@ -191,8 +191,8 @@ unsigned int near prev_length;
 
 unsigned near strstart;      /* start of string to insert */
 unsigned near match_start;   /* start of matching string */
-static int eofile;           /* flag set at end of input file */
-static unsigned lookahead;   /* number of valid bytes ahead in window */
+static int eofile;           /* Flag set at end of input file.  */
+static unsigned lookahead;   /* Number of valid bytes ahead in window.  */
 
 unsigned max_chain_length;
 /* To speed up deflation, hash chains are never searched beyond this length.

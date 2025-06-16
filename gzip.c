@@ -207,7 +207,7 @@ static bool stdin_was_read;
 off_t bytes_in;             /* number of input bytes */
 off_t bytes_out;            /* number of output bytes */
 static off_t total_in;      /* input bytes for all files */
-static off_t total_out;     /* output bytes for all files */
+static off_t total_out;     /* Output bytes for all files.  */
 char ifname[MAX_PATH_LEN]; /* input file name */
 char ofname[MAX_PATH_LEN]; /* output file name */
 static char dfname[MAX_PATH_LEN]; /* name of dir containing output file */

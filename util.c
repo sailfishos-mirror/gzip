@@ -300,7 +300,7 @@ make_simple_name (char *name)
    If the vector would be empty, do not allocate storage,
    do not set *ARGCP and *ARGVP, and return NULL.  */
 
-#define SEPARATOR   " \t"   /* separators in env variable */
+#define SEPARATOR " \t" /* Separators in environment variable.  */
 
 char *add_envopt(
     int *argcp,          /* pointer to argc */
@@ -319,11 +319,12 @@ char *add_envopt(
     env_val = xstrdup (env_val);
 
     for (p = env_val; *p; nargc++ ) {        /* move through env_val */
-        p += strspn(p, SEPARATOR);       /* skip leading separators */
+        p += strspn (p, SEPARATOR);      /* Skip leading separators.  */
         if (*p == '\0') break;
 
-        p += strcspn(p, SEPARATOR);      /* find end of word */
-        if (*p) *p++ = '\0';             /* mark it */
+        p += strcspn (p, SEPARATOR);     /* Find end of word.  */
+        if (*p)                          /* Mark it if found.  */
+          *p++ = '\0';
     }
     if (nargc == 0) {
         free(env_val);
@@ -342,9 +343,10 @@ char *add_envopt(
 
     /* Then copy the environment args */
     for (p = env_val; nargc > 0; nargc--) {
-        p += strspn(p, SEPARATOR);       /* skip separators */
-        *(nargv++) = p;              /* store start */
-        while (*p++) ;               /* skip over word */
+        p += strspn (p, SEPARATOR);  /* skip separators */
+        *nargv++ = p;                /* store start */
+        while (*p++)                 /* skip over word */
+          continue;
     }
 
     *nargv = NULL;
