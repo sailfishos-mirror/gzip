@@ -60,6 +60,68 @@ static int ext_header = 0; /* set if extended local header */
 static ulg orig_crc;       /* CRC from gzip trailer or zip local header */
 static ulg orig_len;       /* uncompressed length from trailer or header */
 
+/* Check zip file and advance inptr to the start of the compressed data.
+   Return a null pointer on success, a diagnostic string otherwise.  */
+static char const *
+bad_zipfile (void)
+{
+  static char const bad[] = "not a valid zip file";
+  if (insize - inptr < 4)
+    return bad;
+  uch *h = inbuf + inptr;
+  ulg sig = LG (h);
+  if (sig == SPNSIG || sig == ONESIG)
+    {
+      /* skip spanning signature */
+      h += 4;
+      inptr += 4;
+      if (insize - inptr < 4)
+        return bad;
+      sig = LG (h);
+    }
+  if (sig == ENDSIG || sig == Z64SIG)
+    return "is an empty zip file";
+  if (sig != LOCSIG || insize - inptr < LOCHDR)
+    /* not a local header */
+    return bad;
+  inptr += LOCHDR;
+
+  /* Get compression method */
+  method = SH (h + LOCHOW);
+  if (method != STORED && method != DEFLATED)
+    return "first entry not deflated or stored -- use unzip";
+
+  /* Check for encryption */
+  if ((h[LOCFLG] & CRPFLG) != 0)
+    return "encrypted file -- use unzip";
+
+  /* Save header information for unzip() */
+  ext_header = (h[LOCFLG] & EXTFLG) != 0;
+  orig_crc = LG (h + LOCCRC);
+  orig_len = LG (h + LOCLEN);
+  if (method == STORED && (ext_header || orig_len != LG (h + LOCSIZ)))
+    return bad;
+  if (!ext_header && orig_len == 0xffffffff)
+    return "Zip64 entry -- not supported, use unzip";
+
+  /* Get ofname and timestamp from local header (to be done) */
+
+  /* Skip over the file name and extra field (need to loop for the
+     SMALL_MEM case) */
+  ulg skip = (ulg) SH (h + LOCFIL) + (ulg) SH (h + LOCEXT);
+  while (insize - inptr < skip)
+    {
+      skip -= insize - inptr;
+      fill_inbuf (0);          /* Will error out on no more input.  */
+      inptr = 0;
+    }
+  inptr += skip;
+
+  /* Good local header */
+  pkzip = 1;
+  return NULL;
+}
+
 /* ===========================================================================
  * Check zip file and advance inptr to the start of the compressed data.
  * Get ofname from the local header if necessary.
@@ -68,78 +130,15 @@ static ulg orig_len;       /* uncompressed length from trailer or header */
 int
 check_zipfile (int in)
 {
-    ulg sig, skip;
-    uch *h = inbuf + inptr;
-    const char *bad = "not a valid zip file";
     ifd = in;
-    do {
-        if (insize - inptr < 4)
-            break;
-        sig = LG(h);
-        if (sig == SPNSIG || sig == ONESIG) {
-            /* skip spanning signature */
-            h += 4;
-            inptr += 4;
-            if (insize - inptr < 4)
-                break;
-            sig = LG(h);
-        }
-        if (sig == ENDSIG || sig == Z64SIG) {
-            /* empty zip file */
-            bad = "is an empty zip file";
-            break;
-        }
-        if (sig != LOCSIG || insize - inptr < LOCHDR)
-            /* not a local header */
-            break;
-        inptr += LOCHDR;
+    char const *bad = bad_zipfile ();
 
-        /* Get compression method */
-        method = SH(h + LOCHOW);
-        if (method != STORED && method != DEFLATED) {
-            bad = "first entry not deflated or stored -- use unzip";
-            break;
-        }
-
-        /* Check for encryption */
-        if ((h[LOCFLG] & CRPFLG) != 0) {
-            bad = "encrypted file -- use unzip";
-            break;
-        }
-
-        /* Save header information for unzip() */
-        ext_header = (h[LOCFLG] & EXTFLG) != 0;
-        orig_crc = LG(h + LOCCRC);
-        orig_len = LG(h + LOCLEN);
-        if (method == STORED && (ext_header || orig_len != LG(h + LOCSIZ)))
-            break;
-        if (!ext_header && orig_len == 0xffffffff) {
-            bad = "Zip64 entry -- not supported, use unzip";
-            break;
-        }
-
-        /* Get ofname and timestamp from local header (to be done) */
-
-        /* Skip over the file name and extra field (need to loop for the
-           SMALL_MEM case) */
-        skip = (ulg)SH(h + LOCFIL) + (ulg)SH(h + LOCEXT);
-        while (skip > insize - inptr) {
-            skip -= insize - inptr;
-            fill_inbuf(0);          /* will error out on no more input */
-            inptr = 0;
-        }
-        inptr += skip;
-
-        /* Good local header */
-        pkzip = 1;
-        bad = NULL;
-    } while (0);
-
-    if (bad != NULL) {
-        fprintf(stderr, "\n%s: %s: %s\n", program_name, ifname, bad);
+    if (bad)
+      {
+        fprintf (stderr, "\n%s: %s: %s\n", program_name, ifname, bad);
         exit_code = ERROR;
         return ERROR;
-    }
+      }
 
     return OK;
 }
