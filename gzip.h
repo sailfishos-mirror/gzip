@@ -152,7 +152,7 @@ typedef int file_t;     /* Do not use stdio */
 #define GZIP_MAGIC     "\037\213" /* Magic header for gzip files, 1F 8B.  */
 #define OLD_GZIP_MAGIC "\037\236" /* Magic header for gzip 0.5 = freeze 1.x.  */
 #define LZH_MAGIC      "\037\240" /* Magic header for SCO LZH Compress.  */
-#define PKZIP_MAGIC    "\120\113\003\004" /* Magic header for pkzip files */
+#define PKZIP_MAGIC    "\120\113" /* Magic header for pkzip files.  */
 
 /* gzip flag byte */
 #define ASCII_FLAG   0x01 /* bit 0 set: file probably ascii text */

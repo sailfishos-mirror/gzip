@@ -302,7 +302,7 @@ static int  open_input_file (char *iname, struct stat *sbuf);
 static void discard_input_bytes (size_t nbytes, unsigned int flags);
 static int  make_ofname (void);
 static void shorten_name (char *name);
-static int  get_method (int in);
+static int  get_method (int in, int first);
 static void do_list (int method);
 static int  check_ofname (void);
 static void copy_stat (struct stat *ifstat);
@@ -734,7 +734,7 @@ treat_stdin ()
     stdin_was_read = true;
 
     if (decompress) {
-        method = get_method(ifd);
+        method = get_method(ifd, 1);
         if (method < 0) {
             do_exit(exit_code); /* error message already emitted */
         }
@@ -749,7 +749,7 @@ treat_stdin ()
         if (input_eof ())
           break;
 
-        method = get_method(ifd);
+        method = get_method(ifd, 0);
         if (method < 0) return; /* error message already emitted */
     }
 
@@ -915,7 +915,7 @@ treat_file (char *iname)
     part_nb = 0;
 
     if (decompress) {
-        method = get_method(ifd); /* updates ofname if original given */
+        method = get_method(ifd, 1); /* updates ofname if original given */
         if (method < 0) {
             close(ifd);
             return;               /* error message already emitted */
@@ -955,7 +955,7 @@ treat_file (char *iname)
         if (input_eof ())
           break;
 
-        method = get_method(ifd);
+        method = get_method(ifd, 0);
         if (method < 0) break;    /* error message already emitted */
     }
 
@@ -1440,12 +1440,12 @@ discard_input_bytes (size_t nbytes, unsigned int flags)
  * Updates time_stamp if there is one and neither -m nor -n is used.
  * This function may be called repeatedly for an input file consisting
  * of several contiguous gzip'ed members.
- * 'in' is the input file descriptor.
+ * 'in' is the input file descriptor, 'first' is true for first call on in
  * IN assertions: there is at least one remaining compressed member.
  *   If the member is a zip file, it must be the only one.
  */
 static int
-get_method (int in)
+get_method (int in, int first)
 {
     uch flags;     /* compression flags */
     uch magic[10]; /* magic header */
@@ -1609,8 +1609,7 @@ get_method (int in)
             header_bytes = inptr + 2*4; /* include crc and size */
         }
 
-    } else if (4 <= insize
-            && memcmp((char*)inbuf, PKZIP_MAGIC, 4) == 0) {
+    } else if (first && memcmp(magic, PKZIP_MAGIC, 2) == 0) {
         /* To simplify the code, we support a zip file when alone only.
          * We are thus guaranteed that the entire local header fits in inbuf.
          */
