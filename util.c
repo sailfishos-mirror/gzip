@@ -402,5 +402,8 @@ void write_error()
 void
 display_ratio (off_t num, off_t den, FILE *file)
 {
-    fprintf(file, "%5.1f%%", den == 0 ? 0 : 100.0 * num / den);
+  if (den)
+    fprintf (file, "%5.1f%%", 100.0 * num / den);
+  else
+    fputs (" -Inf%", file);
 }

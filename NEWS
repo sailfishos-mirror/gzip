@@ -11,6 +11,11 @@ GNU gzip NEWS                                    -*- outline -*-
   A use of uninitialized memory on some malformed inputs has been fixed.
   [bug present since the beginning]
 
+** Changes in behavior
+
+  gzip -l now reports "-Inf%" instead of "0.0%" for the infinite
+  compression ratio of an empty file.
+
 
 * Noteworthy changes in release 1.14 (2025-04-09) [stable]
 
