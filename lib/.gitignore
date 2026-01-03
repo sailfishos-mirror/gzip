@@ -253,3 +253,12 @@
 /xsize.h
 /yesno.c
 /yesno.h
+/cpu-supports.c
+/cpu-supports.h
+/issymlink.c
+/issymlink.h
+/issymlinkat.c
+/readlink.c
+/readlinkat.c
+/stdio-consolesafe.c
+/string.c

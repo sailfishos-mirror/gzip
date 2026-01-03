@@ -170,3 +170,7 @@
 /xsize.m4
 /yesno.m4
 /zzgnulib.m4
+/gettext_h.m4
+/readlink.m4
+/readlinkat.m4
+/stringeq.m4
