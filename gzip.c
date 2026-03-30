@@ -33,7 +33,7 @@ static char const *const license_msg[] = {
 "This is free software.  You may redistribute copies of it under the terms of",
 "the GNU General Public License <https://www.gnu.org/licenses/gpl.html>.",
 "There is NO WARRANTY, to the extent permitted by law.",
-0};
+};
 
 /* Compress files with zip algorithm and 'compress' interface.
  * See help() function below for all options.
@@ -57,6 +57,7 @@ static char const *const license_msg[] = {
 #include <ctype.h>
 #include <sys/types.h>
 #include <signal.h>
+#include <stdcountof.h>
 #include <stddef.h>
 #include <sys/stat.h>
 #include <getopt.h>
@@ -256,35 +257,35 @@ static char const shortopts[] = "ab:cdfhH?klLmMnNqrS:tvVZ123456789";
 static const struct option longopts[] =
 {
  /* { name  has_arg  *flag  val } */
-    {"ascii",      0, 0, 'a'}, /* ascii text mode */
-    {"to-stdout",  0, 0, 'c'}, /* write output on standard output */
-    {"stdout",     0, 0, 'c'}, /* write output on standard output */
-    {"decompress", 0, 0, 'd'}, /* decompress */
-    {"uncompress", 0, 0, 'd'}, /* decompress */
- /* {"encrypt",    0, 0, 'e'},    encrypt */
-    {"force",      0, 0, 'f'}, /* force overwrite of output file */
-    {"help",       0, 0, 'h'}, /* give help */
- /* {"pkzip",      0, 0, 'k'},    force output in pkzip format */
-    {"keep",       0, 0, 'k'}, /* keep (don't delete) input files */
-    {"list",       0, 0, 'l'}, /* list .gz file contents */
-    {"license",    0, 0, 'L'}, /* display software license */
-    {"no-name",    0, 0, 'n'}, /* don't save or restore original name & time */
-    {"name",       0, 0, 'N'}, /* save or restore original name & time */
+    {"ascii",      0, NULL, 'a'}, /* ascii text mode */
+    {"to-stdout",  0, NULL, 'c'}, /* write output on standard output */
+    {"stdout",     0, NULL, 'c'}, /* write output on standard output */
+    {"decompress", 0, NULL, 'd'}, /* decompress */
+    {"uncompress", 0, NULL, 'd'}, /* decompress */
+ /* {"encrypt",    0, NULL, 'e'},    encrypt */
+    {"force",      0, NULL, 'f'}, /* force overwrite of output file */
+    {"help",       0, NULL, 'h'}, /* give help */
+ /* {"pkzip",      0, NULL, 'k'},    force output in pkzip format */
+    {"keep",       0, NULL, 'k'}, /* keep (don't delete) input files */
+    {"list",       0, NULL, 'l'}, /* list .gz file contents */
+    {"license",    0, NULL, 'L'}, /* display software license */
+    {"no-name",    0, NULL, 'n'}, /* don't save or restore original name & time */
+    {"name",       0, NULL, 'N'}, /* save or restore original name & time */
     {"-presume-input-tty", no_argument, NULL, PRESUME_INPUT_TTY_OPTION},
-    {"quiet",      0, 0, 'q'}, /* quiet mode */
-    {"silent",     0, 0, 'q'}, /* quiet mode */
-    {"synchronous",0, 0, SYNCHRONOUS_OPTION}, /* output data synchronously */
-    {"recursive",  0, 0, 'r'}, /* recurse through directories */
-    {"suffix",     1, 0, 'S'}, /* use given suffix instead of .gz */
-    {"test",       0, 0, 't'}, /* test compressed file integrity */
-    {"verbose",    0, 0, 'v'}, /* verbose mode */
-    {"version",    0, 0, 'V'}, /* display version number */
-    {"fast",       0, 0, '1'}, /* compress faster */
-    {"best",       0, 0, '9'}, /* compress better */
-    {"lzw",        0, 0, 'Z'}, /* make output compatible with old compress */
-    {"bits",       1, 0, 'b'}, /* max number of bits per code (implies -Z) */
-    {"rsyncable",  0, 0, RSYNCABLE_OPTION}, /* make rsync-friendly archive */
-    { 0, 0, 0, 0 }
+    {"quiet",      0, NULL, 'q'}, /* quiet mode */
+    {"silent",     0, NULL, 'q'}, /* quiet mode */
+    {"synchronous",0, NULL, SYNCHRONOUS_OPTION}, /* output data synchronously */
+    {"recursive",  0, NULL, 'r'}, /* recurse through directories */
+    {"suffix",     1, NULL, 'S'}, /* use given suffix instead of .gz */
+    {"test",       0, NULL, 't'}, /* test compressed file integrity */
+    {"verbose",    0, NULL, 'v'}, /* verbose mode */
+    {"version",    0, NULL, 'V'}, /* display version number */
+    {"fast",       0, NULL, '1'}, /* compress faster */
+    {"best",       0, NULL, '9'}, /* compress better */
+    {"lzw",        0, NULL, 'Z'}, /* make output compatible with old compress */
+    {"bits",       1, NULL, 'b'}, /* max number of bits per code (implies -Z) */
+    {"rsyncable",  0, NULL, RSYNCABLE_OPTION}, /* make rsync-friendly archive */
+    { NULL, 0, NULL, 0 }
 };
 
 /* local functions */
@@ -371,21 +372,20 @@ help ()
  "With no FILE, or when FILE is -, read standard input.",
  "",
  "Report bugs to <bug-gzip@gnu.org>.",
-  0};
-    char const *const *p = help_msg;
+    };
 
     printf ("Usage: %s [OPTION]... [FILE]...\n", program_name);
-    while (*p) printf ("%s\n", *p++);
+    for (int i = 0; i < countof (help_msg); i++)
+      puts (help_msg[i]);
 }
 
 /* ======================================================================== */
 static void
 license ()
 {
-    char const *const *p = license_msg;
-
     printf ("%s %s\n", program_name, Version);
-    while (*p) printf ("%s\n", *p++);
+    for (int i = 0; i < countof (license_msg); i++)
+      puts (license_msg[i]);
 }
 
 /* ======================================================================== */
@@ -1150,9 +1150,8 @@ get_suffix (char *name)
 
     char *z_lower = xstrdup(z_suffix);
     strlwr(z_lower);
-    known_suffixes[suffix_of_builtin
-                   ? sizeof known_suffixes / sizeof *known_suffixes - 2
-                   : 0] = z_lower;
+    known_suffixes[suffix_of_builtin ? countof (known_suffixes) - 2 : 0]
+      = z_lower;
     suf = known_suffixes + suffix_of_builtin;
 
     nlen = strlen(name);
@@ -1973,12 +1972,11 @@ treat_dir (int fd, char *dir)
 static void
 install_signal_handlers ()
 {
-  int nsigs = sizeof handled_sig / sizeof handled_sig[0];
-  int i;
+  int nsigs = countof (handled_sig);
   struct sigaction act;
 
   sigemptyset (&caught_signals);
-  for (i = 0; i < nsigs; i++)
+  for (int i = 0; i < nsigs; i++)
     {
       sigaction (handled_sig[i], NULL, &act);
       if (act.sa_handler != SIG_IGN)
@@ -1989,7 +1987,7 @@ install_signal_handlers ()
   act.sa_mask = caught_signals;
   act.sa_flags = 0;
 
-  for (i = 0; i < nsigs; i++)
+  for (int i = 0; i < nsigs; i++)
     if (sigismember (&caught_signals, handled_sig[i]))
       {
         if (i == 0)
