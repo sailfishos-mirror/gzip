@@ -65,6 +65,9 @@ gl_INIT
 # Note -Wvla is implicitly added by gl_MANYWARN_ALL_GCC
 AC_DEFINE([GNULIB_NO_VLA], [1], [Define to 1 to disable use of VLAs])
 
+AC_DEFINE([GNULIB_SIGACTION_SINGLE_THREAD], [1],
+  [Define to 1 if programs call 'sigaction' functions from a single thread.])
+
 # gl_GCC_VERSION_IFELSE([major], [minor], [run-if-found], [run-if-not-found])
 # ------------------------------------------------
 # If $CPP is gcc-MAJOR.MINOR or newer, then run RUN-IF-FOUND.
