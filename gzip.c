@@ -1097,8 +1097,6 @@ create_outfile ()
 
         default:
           write_error ();
-          close (ifd);
-          return ERROR;
         }
     }
 
