@@ -12,7 +12,7 @@
 /INSTALL
 /README-release
 /aclocal.m4
-/build-aux
+/build-aux/
 /config.status
 /configure
 /gunzip
