@@ -11,6 +11,10 @@ GNU gzip NEWS                                    -*- outline -*-
   A use of uninitialized memory on some malformed inputs has been fixed.
   [bug present since the beginning]
 
+  A buffer overflow has been fixed when decompressing an .lzh file
+  after decompressing a .Z file.
+  [bug present since the beginning]
+
 ** Changes in behavior
 
   gzip -l now reports "-Inf%" instead of "0.0%" for the infinite
