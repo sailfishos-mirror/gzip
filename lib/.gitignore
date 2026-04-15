@@ -145,6 +145,7 @@
 /pathmax.h
 /pipe-safer.c
 /pipe.c
+/pthread_sigmask.c
 /qsort.c
 /qsort_r.c
 /raise.c

@@ -94,6 +94,7 @@
 /pathmax.m4
 /pid_t.m4
 /pipe.m4
+/pthread_sigmask.m4
 /qsort_r.m4
 /raise.m4
 /readdir.m4
