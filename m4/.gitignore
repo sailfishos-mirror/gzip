@@ -138,6 +138,7 @@
 /unistd_h.m4
 /unlink.m4
 /unlinkat.m4
+/unlocked-io.m4
 /utime.m4
 /utime_h.m4
 /utimens.m4

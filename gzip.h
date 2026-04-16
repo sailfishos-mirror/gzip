@@ -33,7 +33,7 @@
 /* I don't like nested includes, but the following headers are used
  * too often
  */
-#include <stdio.h>
+#include <unlocked-io.h>
 #include <sys/types.h> /* for off_t */
 #include <time.h>
 #include <string.h>

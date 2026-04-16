@@ -217,6 +217,7 @@
 /unistd.in.h
 /unlink.c
 /unlinkat.c
+/unlocked-io.h
 /utime.c
 /utime.h
 /utime.in.h

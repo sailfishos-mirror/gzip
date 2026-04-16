@@ -322,6 +322,17 @@ static void treat_dir (int fd, char *dir);
 #define strequ(s1, s2) (strcmp((s1),(s2)) == 0)
 
 static void
+putstring (char const *string)
+{
+  fputs (string, stdout);
+}
+static void
+eputstring (char const *string)
+{
+  fputs (string, stderr);
+}
+
+static void
 try_help ()
 {
   fprintf (stderr, "Try `%s --help' for more information.\n",
@@ -393,8 +404,7 @@ static void
 version ()
 {
     license ();
-    printf ("\n");
-    printf ("Written by Jean-loup Gailly.\n");
+    putstring ("\nWritten by Jean-loup Gailly.\n");
 }
 
 static void
@@ -761,15 +771,15 @@ treat_stdin ()
 
     if (verbose) {
         if (test) {
-            fprintf(stderr, " OK\n");
+            eputstring (" OK\n");
 
         } else if (!decompress) {
             display_ratio(bytes_in-(bytes_out-header_bytes), bytes_in, stderr);
-            fprintf(stderr, "\n");
+            eputstring ("\n");
 #ifdef DISPLAY_STDIN_RATIO
         } else {
             display_ratio(bytes_out-(bytes_in-header_bytes), bytes_out,stderr);
-            fprintf(stderr, "\n");
+            eputstring ("\n");
 #endif
         }
     }
@@ -1007,7 +1017,7 @@ treat_file (char *iname)
     /* Display statistics */
     if(verbose) {
         if (test) {
-            fprintf(stderr, " OK");
+            eputstring (" OK");
         } else if (decompress) {
             display_ratio(bytes_out-(bytes_in-header_bytes), bytes_out,stderr);
         } else {
@@ -1016,7 +1026,7 @@ treat_file (char *iname)
         if (!test)
           fprintf(stderr, " -- %s %s", keep ? "created" : "replaced with",
                   ofname);
-        fprintf(stderr, "\n");
+        eputstring ("\n");
     }
 }
 
@@ -1694,7 +1704,7 @@ do_list (int method)
     if (first_time && method >= 0) {
         first_time = 0;
         if (verbose)  {
-            printf("method  crc     date  time  ");
+            putstring ("method  crc     date  time  ");
         }
         if (!quiet) {
             printf("%*.*s %*.*s  ratio uncompressed_name\n",
@@ -1704,7 +1714,7 @@ do_list (int method)
     } else if (method < 0) {
         if (total_in <= 0 || total_out <= 0) return;
         if (verbose) {
-            printf("                            ");
+            putstring ("                            ");
         }
         if (verbose || !quiet)
           printf ("%*jd %*jd ", positive_off_t_width, (intmax_t) total_in,
@@ -1713,7 +1723,7 @@ do_list (int method)
         /* header_bytes is not meaningful but used to ensure the same
          * ratio if there is a single file.
          */
-        printf(" (totals)\n");
+        putstring (" (totals)\n");
         return;
     }
     crc = (ulg)~0; /* unknown */
@@ -1828,12 +1838,12 @@ check_ofname ()
         int ok = 0;
         fprintf (stderr, "%s: %s already exists;", program_name, ofname);
         if (foreground && (presume_input_tty || isatty (STDIN_FILENO))) {
-            fprintf(stderr, " do you wish to overwrite (y or n)? ");
+            eputstring (" do you wish to overwrite (y or n)? ");
             fflush(stderr);
             ok = yesno();
         }
         if (!ok) {
-            fprintf(stderr, "\tnot overwritten\n");
+            eputstring ("\tnot overwritten\n");
             if (exit_code == OK) exit_code = WARNING;
             return ERROR;
         }
