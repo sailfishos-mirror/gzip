@@ -89,6 +89,8 @@ if test -n "$opt"; then
   opt="-$opt"
 fi
 
+mktemp_status=
+
 for i do
   n=`printf '%s\n' "$i" | sed 's/.Z$//'`
   if test ! -f "$n.Z" ; then
@@ -107,7 +109,16 @@ for i do
     fi
   else
     if test $check -eq 1; then
-      if cp -p "$n.Z" "$n.$$"; then
+      if test -z "$mktemp_status"; then
+        command -v mktemp >/dev/null 2>&1
+        mktemp_status=$?
+      fi
+      if if test $mktemp_status -eq 0; then
+           tmp=`mktemp "$n.XXXXXXXXX"`
+         else
+           tmp=$n.$$
+           (umask 77; set -C; > "$tmp")
+         fi && cp -p "$n.Z" "$tmp"; then
         :
       else
         printf '%s\n' "cannot backup $n.Z"
@@ -117,7 +128,7 @@ for i do
     if 'gzip' -d "$n.Z"; then
       :
     else
-      test $check -eq 1 && mv "$n.$$" "$n.Z"
+      test $check -eq 1 && mv "$tmp" "$n.Z"
       printf '%s\n' "error while uncompressing $n.Z"
       res=1; continue
     fi
@@ -125,7 +136,7 @@ for i do
       :
     else
       if test $check -eq 1; then
-        mv "$n.$$" "$n.Z" && rm -f "$n"
+        mv "$tmp" "$n.Z" && rm -f "$n"
         printf '%s\n' "error while recompressing $n"
       else
         # compress $n  (might be dangerous if disk full)
@@ -140,15 +151,15 @@ for i do
     if test $pipe -eq 1; then
       rm -f "$n$ext"
     else
-      mv "$n.$$" "$n.Z" && rm -f "$n$ext"
+      mv "$tmp" "$n.Z" && rm -f "$n$ext"
     fi
     printf '%s\n' "$n.Z smaller than $n$ext -- unchanged"
 
   elif test $check -eq 1; then
     if 'gzip' -t "$n$ext" ; then
-      rm -f "$n.$$" "$n.Z"
+      rm -f "$tmp" "$n.Z"
     else
-      test $pipe -eq 0 && mv "$n.$$" "$n.Z"
+      test $pipe -eq 0 && mv "$tmp" "$n.Z"
       rm -f "$n$ext"
       printf '%s\n' "error while testing $n$ext, $n.Z unchanged"
       res=1; continue
