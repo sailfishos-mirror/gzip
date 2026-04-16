@@ -102,7 +102,7 @@ fillbuf (int n)
         if ((int)subbitbuf == EOF) subbitbuf = 0;
         bitcount = CHAR_BIT;
     }
-    bitbuf |= subbitbuf >> (bitcount -= n);
+    bitbuf |= (subbitbuf >> (bitcount -= n)) & ~ (-1u << n);
 }
 
 static unsigned
