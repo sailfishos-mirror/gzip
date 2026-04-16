@@ -5,7 +5,6 @@
 
 #include <config.h>
 #include <limits.h>
-#include <stdio.h>
 
 #include "tailor.h"
 #include "gzip.h"

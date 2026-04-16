@@ -67,10 +67,6 @@
 #include "tailor.h"
 #include "gzip.h"
 
-#ifdef DEBUG
-#  include <stdio.h>
-#endif
-
 /* ===========================================================================
  * Local data used by the "bit string" routines.
  */

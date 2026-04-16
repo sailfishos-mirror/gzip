@@ -74,7 +74,6 @@
  */
 
 #include <config.h>
-#include <stdio.h>
 
 #include "deflate.h"
 #include "tailor.h"
