@@ -94,7 +94,8 @@ static int       bitcount;
 static void
 fillbuf (int n)
 {
-    bitbuf <<= n;
+    unsigned bb = bitbuf;
+    bitbuf = bb << n;
     while (n > bitcount) {
         bitbuf |= subbitbuf << (n -= bitcount);
         subbitbuf = (unsigned)try_byte();
