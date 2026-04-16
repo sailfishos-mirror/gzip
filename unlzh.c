@@ -87,7 +87,7 @@ static ush pt_table[256];
 ***********************************************************/
 
 static ush       bitbuf;
-static unsigned  subbitbuf;
+static uch       subbitbuf;
 static int       bitcount;
 
 /* Shift bitbuf N bits left, read N bits.  */
@@ -98,8 +98,8 @@ fillbuf (int n)
     bitbuf = bb << n;
     while (n > bitcount) {
         bitbuf |= subbitbuf << (n -= bitcount);
-        subbitbuf = (unsigned)try_byte();
-        if ((int)subbitbuf == EOF) subbitbuf = 0;
+        int i = try_byte ();
+        subbitbuf = i < 0 ? 0 : i;
         bitcount = CHAR_BIT;
     }
     bitbuf |= (subbitbuf >> (bitcount -= n)) & ~ (-1u << n);
