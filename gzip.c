@@ -27,13 +27,14 @@
  * See the file algorithm.doc for the compression algorithms and file formats.
  */
 
-static char const *const license_msg[] = {
-"Copyright (C) 2026 Free Software Foundation, Inc.",
-"Copyright (C) 1993 Jean-loup Gailly.",
-"This is free software.  You may redistribute copies of it under the terms of",
-"the GNU General Public License <https://www.gnu.org/licenses/gpl.html>.",
-"There is NO WARRANTY, to the extent permitted by law.",
-};
+static char const license_msg[] =
+  "%s %s\n"
+  "Copyright (C) 2026 Free Software Foundation, Inc.\n"
+  "Copyright (C) 1993 Jean-loup Gailly.\n"
+  "This is free software.  You may redistribute copies of it under the terms of\n"
+  "the GNU General Public License <https://www.gnu.org/licenses/gpl.html>.\n"
+  "There is NO WARRANTY, to the extent permitted by law.\n"
+  ;
 
 /* Compress files with zip algorithm and 'compress' interface.
  * See help() function below for all options.
@@ -344,59 +345,56 @@ try_help ()
 static void
 help ()
 {
-    static char const* const help_msg[] = {
- "Compress or uncompress FILEs (by default, compress FILES in-place).",
- "",
- "Mandatory arguments to long options are mandatory for short options too.",
- "",
+  static char const help_msg[] =
+ "Usage: %s [OPTION]... [FILE]...\n"
+ "Compress or uncompress FILEs (by default, compress FILES in-place).\n"
+ "\n"
+ "Mandatory arguments to long options are mandatory for short options too.\n"
+ "\n"
 #if O_BINARY
- "  -a, --ascii       ascii text; convert end-of-line using local conventions",
+ "  -a, --ascii       ascii text; convert end-of-line using local conventions\n"
 #endif
- "  -c, --stdout      write on standard output, keep original files unchanged",
- "  -d, --decompress  decompress",
+ "  -c, --stdout      write on standard output, keep original files unchanged\n"
+ "  -d, --decompress  decompress\n"
 /*  -e, --encrypt     encrypt */
- "  -f, --force       force overwrite of output file and compress links",
- "  -h, --help        give this help",
+ "  -f, --force       force overwrite of output file and compress links\n"
+ "  -h, --help        give this help\n"
 /*  -k, --pkzip       force output in pkzip format */
- "  -k, --keep        keep (don't delete) input files",
- "  -l, --list        list compressed file contents",
- "  -L, --license     display software license",
+ "  -k, --keep        keep (don't delete) input files\n"
+ "  -l, --list        list compressed file contents\n"
+ "  -L, --license     display software license\n"
 #ifdef UNDOCUMENTED
- "  -m                do not save or restore the original modification time",
- "  -M, --time        save or restore the original modification time",
+ "  -m                do not save or restore the original modification time\n"
+ "  -M, --time        save or restore the original modification time\n"
 #endif
- "  -n, --no-name     do not save or restore the original name and timestamp",
- "  -N, --name        save or restore the original name and timestamp",
- "  -q, --quiet       suppress all warnings",
+ "  -n, --no-name     do not save or restore the original name and timestamp\n"
+ "  -N, --name        save or restore the original name and timestamp\n"
+ "  -q, --quiet       suppress all warnings\n"
 #if ! NO_DIR
- "  -r, --recursive   operate recursively on directories",
+ "  -r, --recursive   operate recursively on directories\n"
 #endif
- "      --rsyncable   make rsync-friendly archive",
- "  -S, --suffix=SUF  use suffix SUF on compressed files",
- "      --synchronous synchronous output (safer if system crashes, but slower)",
- "  -t, --test        test compressed file integrity",
- "  -v, --verbose     verbose mode",
- "  -V, --version     display version number",
- "  -1, --fast        compress faster",
- "  -9, --best        compress better",
- "",
- "With no FILE, or when FILE is -, read standard input.",
- "",
- "Report bugs to <bug-gzip@gnu.org>.",
-    };
+ "      --rsyncable   make rsync-friendly archive\n"
+ "  -S, --suffix=SUF  use suffix SUF on compressed files\n"
+ "      --synchronous synchronous output (safer if system crashes, but slower)\n"
+ "  -t, --test        test compressed file integrity\n"
+ "  -v, --verbose     verbose mode\n"
+ "  -V, --version     display version number\n"
+ "  -1, --fast        compress faster\n"
+ "  -9, --best        compress better\n"
+ "\n"
+ "With no FILE, or when FILE is -, read standard input.\n"
+ "\n"
+ "Report bugs to <bug-gzip@gnu.org>.\n"
+    ;
 
-    printf ("Usage: %s [OPTION]... [FILE]...\n", program_name);
-    for (int i = 0; i < countof (help_msg); i++)
-      puts (help_msg[i]);
+  printf (help_msg, program_name);
 }
 
 /* ======================================================================== */
 static void
 license ()
 {
-    printf ("%s %s\n", program_name, Version);
-    for (int i = 0; i < countof (license_msg); i++)
-      puts (license_msg[i]);
+  printf (license_msg, program_name, Version);
 }
 
 /* ======================================================================== */
