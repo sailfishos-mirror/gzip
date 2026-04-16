@@ -156,12 +156,11 @@ case $file2 in
                           *) TMPDIR=/tmp/;;
                         esac
                         if command -v mktemp >/dev/null 2>&1; then
-                          tmp=`mktemp "${TMPDIR}zdiffXXXXXXXXX"` ||
-                            exit 2
+                          tmp=`mktemp "${TMPDIR}zdiffXXXXXXXXX"`
                         else
-                          set -C
                           tmp=${TMPDIR}zdiff$$
-                        fi
+                          (umask 77; set -C; > "$tmp")
+                        fi &&
                         'gzip' -cdfq -- "$file2" > "$tmp" || exit 2
                         gzip_status=$(
                           exec 4>&1
