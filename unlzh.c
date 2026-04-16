@@ -250,7 +250,7 @@ read_c_len ()
                     mask >>= 1;
                 } while (c >= NT);
             }
-            fillbuf((int) pt_len[c]);
+            fillbuf (pt_len[c]);
             if (c <= 2) {
                 if      (c == 0) c = 1;
                 else if (c == 1) c = getbits(4) + 3;
@@ -287,7 +287,7 @@ decode_c ()
             mask >>= 1;
         } while (j >= NC);
     }
-    fillbuf((int) c_len[j]);
+    fillbuf (c_len[j]);
     return j;
 }
 
@@ -305,7 +305,7 @@ decode_p ()
             mask >>= 1;
         } while (j >= NP);
     }
-    fillbuf((int) pt_len[j]);
+    fillbuf (pt_len[j]);
     if (j != 0) j = ((unsigned) 1 << (j - 1)) + getbits((int) (j - 1));
     return j;
 }
