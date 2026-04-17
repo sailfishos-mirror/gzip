@@ -101,7 +101,6 @@
 /gettext.h
 /gettime.c
 /gettimeofday.c
-/glthread
 /gnulib.mk
 /ialloc.c
 /ialloc.h
@@ -118,13 +117,11 @@
 /libgzip.a
 /limits.h
 /limits.in.h
-/locale.h
 /lseek.c
 /lstat.c
 /malloc.c
 /malloca.c
 /malloca.h
-/math.h
 /memchr.c
 /memchr.valgrind
 /memeq.c
@@ -147,7 +144,6 @@
 /pathmax.h
 /pipe-safer.c
 /pipe.c
-/pthread.h
 /pthread_sigmask.c
 /qsort.c
 /qsort_r.c
@@ -162,7 +158,6 @@
 /save-cwd.h
 /savedir.c
 /savedir.h
-/sched.h
 /sig-handler.c
 /sig-handler.h
 /sigaction.c
@@ -214,20 +209,11 @@
 /time.in.h
 /timespec.c
 /timespec.h
-/uchar.h
-/unicase.h
-/unicase/
-/unictype.h
-/unictype/
-/uninorm.h
 /unistd--.h
 /unistd-safer.h
 /unistd.c
 /unistd.h
 /unistd.in.h
-/unitypes.h
-/uniwidth.h
-/uniwidth/
 /unlink.c
 /unlinkat.c
 /unlocked-io.h
@@ -240,7 +226,6 @@
 /warn-on-use.h
 /wchar.h
 /wchar.in.h
-/wctype.h
 /xalloc-die.c
 /xalloc-oversized.h
 /xalloc.h
