@@ -16,7 +16,7 @@ GNU gzip NEWS                                    -*- outline -*-
   [bug present since the beginning]
 
   When decompressing an .lzh file, the output is no longer corrupted
-  when an internal bit buffer is not propery cleared.
+  when an internal bit buffer is not properly cleared.
   [bug present since the beginning]
 
   On old-fashioned or limited platforms lacking mktemp, gzexe, zdiff

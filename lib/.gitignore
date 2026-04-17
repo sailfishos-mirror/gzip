@@ -233,3 +233,6 @@
 /xmalloc.c
 /yesno.c
 /yesno.h
+/locale.in.h
+/setlocale_null-unlocked.c
+/setlocale_null.h

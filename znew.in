@@ -113,12 +113,12 @@ for i do
         command -v mktemp >/dev/null 2>&1
         mktemp_status=$?
       fi
-      if if test $mktemp_status -eq 0; then
-           tmp=`mktemp "$n.XXXXXXXXX"`
-         else
-           tmp=$n.$$
-           (umask 77; set -C; > "$tmp")
-         fi && cp -p "$n.Z" "$tmp"; then
+      if { if test $mktemp_status -eq 0; then
+             tmp=`mktemp "$n.XXXXXXXXX"`
+           else
+             tmp=$n.$$
+             (umask 77; set -C; > "$tmp")
+           fi; } && cp -p "$n.Z" "$tmp"; then
         :
       else
         printf '%s\n' "cannot backup $n.Z"
