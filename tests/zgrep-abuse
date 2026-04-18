@@ -20,6 +20,9 @@
 
 . "${srcdir=.}/init.sh"; path_prepend_ ..
 
+touch 'a|b' 2>/dev/null && rm -f 'a|b' \
+  || skip_ 'file system lacks support for | in file names'
+
 : > z || framework_failure_
 echo test |gzip > 'z|
 p
