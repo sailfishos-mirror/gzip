@@ -251,7 +251,9 @@ AC_CACHE_CHECK([for an assembler syntax supported by this package],
    case $DEFS in
      *NO_ASM*) ;;
      *)
-       # Avoid a crash in musl libc's startup code.
+       # Avoid a crash in musl libc's startup code,
+       # because musl doesn't support TEXTRELs.
+       # https://www.openwall.com/lists/musl/2020/09/25/1
        AC_REQUIRE([AC_CANONICAL_HOST])
        case "$host_os" in
          *-musl* | midipix*) ;;
