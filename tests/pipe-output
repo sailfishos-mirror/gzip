@@ -22,15 +22,27 @@
 sleep 0.01 && sleep_amount=0.01 || sleep_amount=1
 
 echo a >a && echo b >b || framework_failure_
-gzip a && gzip b || fail=1
+gzip -k a && gzip -k b || fail=1
 
-# Check that gzip etc. behave like cat if the output is a broken pipe.
+# get_underlying_status CMD MINFAIL
+# ---------------------------------
+# Assign to the variable underlying_status the exit status of the command CMD.
+# Treat all exit statuses in the range MINFAIL..127
+# as if they were NFAIL.
+get_underlying_status() {
+  underlying_status=$(
+    (($trap_pipe '' PIPE
+      sleep $sleep_amount
+      eval "$1"
+      echo $? >&3) | : ) 3>&1)
+  test $2 -le $underlying_status && test $underlying_status -le 127 &&
+    underlying_status=$2
+}
+
+# Check that gzip etc. behave like cat etc. if the output is a broken pipe.
 for trap_pipe in trap :; do
-  cat_status=$( (($trap_pipe '' PIPE
-                  sleep $sleep_amount
-                  cat <a.gz
-                  echo $? >&3) | : ) 3>&1)
-  test 1 -lt $cat_status && test $cat_status -lt 128 && cat_status=1
+  get_underlying_status 'cat <a.gz' 1
+  cat_status=$underlying_status
 
   for cmd in 'gunzip' 'gunzip -q' 'gzip -d' 'gzip -dq' \
              'zcat' 'zcmp - b.gz' 'zdiff - b.gz' 'zgrep a'; do
@@ -38,8 +50,15 @@ for trap_pipe in trap :; do
                     sleep $sleep_amount
                     $cmd <a.gz
                     echo $? >&3) | : ) 3>&1)
-    test 1 -lt $cmd_status && test $cmd_status -lt 128 && cmd_status=1
-    test $cat_status -eq $cmd_status || fail=1
+    minfail=2
+    case $cmd in
+      zcmp*) get_underlying_status 'cmp - b <a' $minfail;;
+      zdiff*) get_underlying_status 'diff - b <a' $minfail;;
+      zgrep*) get_underlying_status 'grep a <a' $minfail;;
+      *) underlying_status=$cat_status minfail=1;;
+    esac
+    test $minfail -lt $cmd_status && test $cmd_status -lt 128 && cmd_status=1
+    test $underlying_status -eq $cmd_status || fail=1
   done
 done
 
