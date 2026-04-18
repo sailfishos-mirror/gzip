@@ -249,27 +249,35 @@ AC_CACHE_CHECK([for an assembler syntax supported by this package],
   [gzip_cv_assembler],
   [gzip_cv_assembler=no
    case $DEFS in
-   *NO_ASM*) ;;
-   *)
-     if cp $srcdir/lib/match.c _match.S &&
-        eval "$CPP $CPPFLAGS $ASCPPFLAGS _match.S > _match.i" &&
-        eval "$ASCPPPOST < _match.i > match_.s"; then
-       if test ! -s match_.s || grep error < match_.s > /dev/null; then
-         :
-       elif eval "$CC $CPPFLAGS $CFLAGS -c match_.s >/dev/null" &&
-            test -f match_.$OBJEXT; then
-         rm -f match_.$OBJEXT
-         gzip_cv_assembler=yes
-         if echo 'void foo (void) {}' > conftest.c &&
-            eval "$CC $CPPFLAGS $CFLAGS -S conftest.c >/dev/null" &&
-            grep '\.note\.GNU-stack' conftest.s >/dev/null &&
-            eval "$CC $CPPFLAGS $CFLAGS -c -Wa,--noexecstack match_.s >/dev/null" &&
-            test -f match_.$OBJEXT; then
-           gzip_cv_assembler='yes, with -Wa,--noexecstack'
-         fi
-       fi
-     fi
-     rm -f conftest* _match.i _match.S match_.s match_.$OBJEXT;;
+     *NO_ASM*) ;;
+     *)
+       # Avoid a crash in musl libc's startup code.
+       AC_REQUIRE([AC_CANONICAL_HOST])
+       case "$host_os" in
+         *-musl* | midipix*) ;;
+         *)
+           if cp $srcdir/lib/match.c _match.S &&
+              eval "$CPP $CPPFLAGS $ASCPPFLAGS _match.S > _match.i" &&
+              eval "$ASCPPPOST < _match.i > match_.s"; then
+             if test ! -s match_.s || grep error < match_.s > /dev/null; then
+               :
+             elif eval "$CC $CPPFLAGS $CFLAGS -c match_.s >/dev/null" &&
+                  test -f match_.$OBJEXT; then
+               rm -f match_.$OBJEXT
+               gzip_cv_assembler=yes
+               if echo 'void foo (void) {}' > conftest.c &&
+                  eval "$CC $CPPFLAGS $CFLAGS -S conftest.c >/dev/null" &&
+                  grep '\.note\.GNU-stack' conftest.s >/dev/null &&
+                  eval "$CC $CPPFLAGS $CFLAGS -c -Wa,--noexecstack match_.s >/dev/null" &&
+                  test -f match_.$OBJEXT; then
+                 gzip_cv_assembler='yes, with -Wa,--noexecstack'
+               fi
+             fi
+           fi
+           rm -f conftest* _match.i _match.S match_.s match_.$OBJEXT
+           ;;
+       esac
+       ;;
    esac])
 if test "$gzip_cv_assembler" != no; then
   AC_DEFINE([ASMV], ,
