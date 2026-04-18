@@ -319,6 +319,7 @@ _Noreturn extern void gzip_error (char const *m);
 _Noreturn extern void xalloc_die (void);
 extern void warning       (char const *m);
 _Noreturn extern void read_error (void);
+_Noreturn extern void write_err (int err);
 _Noreturn extern void write_error (void);
 extern void display_ratio (off_t num, off_t den, FILE *file);
 

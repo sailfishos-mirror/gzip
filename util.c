@@ -388,12 +388,19 @@ void read_error()
     abort_gzip();
 }
 
-void write_error()
+void
+write_err (int err)
 {
-  int exitcode = errno == EPIPE ? WARNING : ERROR;
+  int exitcode = err == EPIPE ? WARNING : ERROR;
   if (! (exitcode == WARNING && quiet))
-    fprintf (stderr, "\n%s: %s: %s\n", program_name, ofname, strerror (errno));
+    fprintf (stderr, "\n%s: %s: %s\n", program_name, ofname, strerror (err));
   finish_up_gzip (exitcode);
+}
+
+void
+write_error ()
+{
+  write_err (errno);
 }
 
 /* ========================================================================

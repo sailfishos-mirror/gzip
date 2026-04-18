@@ -636,6 +636,8 @@ int main (int argc, char **argv)
           do_list (-1);
         if (fflush (stdout) != 0)
           write_error ();
+        if (ferror (stdout))
+          write_err (EIO);
       }
     if (to_stdout
         && ((synchronous
@@ -1104,7 +1106,7 @@ create_outfile ()
           break;
 
         default:
-          write_error ();
+          write_err (open_errno);
         }
     }
 
@@ -2030,6 +2032,10 @@ do_exit (int exitcode)
 static void
 finish_out ()
 {
+  if (fflush (stdout) < 0)
+    write_error ();
+  if (ferror (stdout))
+    write_err (EIO);
   if (fclose (stdout) != 0)
     write_error ();
   do_exit (OK);
