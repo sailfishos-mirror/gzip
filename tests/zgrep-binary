@@ -20,11 +20,12 @@
 
 . "${srcdir=.}/init.sh"; path_prepend_ ..
 
-fail=0
-
+: ${GREP=grep}
 unset GREP_OPTIONS
 
+fail=0
+
 printf 'foo\0\n' >f || framework_failure_
-LC_ALL=C zgrep foo f >out 2>err && grep '(standard input)' out err && fail=1
+LC_ALL=C zgrep foo f >out 2>err && $GREP '(standard input)' out err && fail=1
 
 Exit $fail

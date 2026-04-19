@@ -20,6 +20,9 @@
 
 . "${srcdir=.}/init.sh"; path_prepend_ ..
 
+: ${GREP=grep}
+unset GREP_OPTIONS
+
 echo a > a || framework_failure_
 echo b > b || framework_failure_
 
@@ -37,7 +40,7 @@ gzip a b || fail=1
 returns_ 1 zdiff a.gz b.gz > out 2> err || fail=1
 
 compare exp out || fail=1
-grep -v '^+' err && fail=1
+$GREP -v '^+' err && fail=1
 
 rm -f out
 # expect success, for equal files

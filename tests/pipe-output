@@ -19,6 +19,9 @@
 
 . "${srcdir=.}/init.sh"; path_prepend_ ..
 
+: ${GREP=grep}
+unset GREP_OPTIONS
+
 sleep 0.01 && sleep_amount=0.01 || sleep_amount=1
 
 echo a >a && echo b >b || framework_failure_
@@ -54,7 +57,7 @@ for trap_pipe in trap :; do
     case $cmd in
       zcmp*) get_underlying_status 'cmp - b <a' $minfail;;
       zdiff*) get_underlying_status 'diff - b <a' $minfail;;
-      zgrep*) get_underlying_status 'grep a <a' $minfail;;
+      zgrep*) get_underlying_status '$GREP a <a' $minfail;;
       *) underlying_status=$cat_status minfail=1;;
     esac
     test $minfail -lt $cmd_status && test $cmd_status -lt 128 && cmd_status=1
