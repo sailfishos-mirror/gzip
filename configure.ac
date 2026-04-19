@@ -253,7 +253,7 @@ AC_CACHE_CHECK([for an assembler syntax supported by this package],
      [# 'host_os?' ensures Gnulib sets host_os as usual.
       AS_CASE([${host_os?}],
         [*-musl* | midipix*],
-          [Avoid a crash in musl libc's startup code,
+          [# Avoid a crash in musl libc's startup code,
            # because musl doesn't support TEXTRELs.
            # https://www.openwall.com/lists/musl/2020/09/25/1
           ],
