@@ -72,7 +72,7 @@ do
             *) printf >&2 '%s\n' "$0: extra operand '$arg'"; exit 2;;
             esac;;
          esac;;
-     *) cmp="$cmp $needop '$arg'"
+     *) cmp="$cmp $needop '"`printf '%sX\n' "$arg" | LC_ALL=C sed "$escape"`
         needop=;;
      esac;;
   esac
