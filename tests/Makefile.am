@@ -40,6 +40,7 @@ TESTS =					\
   write-error				\
   z-suffix				\
   zdiff					\
+  zdiff-abuse				\
   zgrep-f				\
   zgrep-abuse				\
   zgrep-binary				\
