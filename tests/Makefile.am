@@ -116,6 +116,7 @@ TESTS_ENVIRONMENT =					\
   MAKE=$(MAKE)						\
   PACKAGE_BUGREPORT='$(PACKAGE_BUGREPORT)'		\
   PACKAGE_VERSION=$(PACKAGE_VERSION)			\
+  host_os='$(host_os)'					\
   PERL='$(PERL)'					\
   SHELL='$(SHELL)'					\
   PATH='$(abs_top_builddir)$(PATH_SEPARATOR)'"$$PATH"	\

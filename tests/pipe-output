@@ -44,6 +44,9 @@ get_underlying_status() {
 
 # Check that gzip etc. behave like cat etc. if the output is a broken pipe.
 for trap_pipe in trap :; do
+  case $trap_pipe:$host_os in
+    ':':cygwin*) continue;;
+  esac
   get_underlying_status 'cat <a.gz' 1
   cat_status=$underlying_status
 

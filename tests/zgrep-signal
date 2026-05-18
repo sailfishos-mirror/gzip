@@ -54,7 +54,7 @@ write_to_dangling_pipe () {
 write_to_dangling_pipe cat f.gz f.gz
 signal_status=$?
 test 128 -lt $signal_status ||
-  framework_failure_ 'signal handling busted on this host'
+  skip_ 'signal handling busted on this host'
 
 fail=0
 
