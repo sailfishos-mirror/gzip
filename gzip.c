@@ -63,7 +63,6 @@ static char const license_msg[] =
 #include "revision.h"
 #include "version.h"
 
-#include <c-ctype.h>
 #include <dirname.h>
 #include <fcntl--.h>
 #include <filename.h>
