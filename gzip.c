@@ -898,9 +898,9 @@ treat_file (char *iname)
               }
             if (2 <= istat.st_nlink)
               {
-                WARN ((stderr, "%s: %s has %lu other link%s -- file ignored\n",
+                WARN ((stderr, "%s: %s has %ju other link%s -- file ignored\n",
                        program_name, ifname,
-                       (unsigned long int) istat.st_nlink - 1,
+                       (uintmax_t) {istat.st_nlink - 1},
                        istat.st_nlink == 2 ? "" : "s"));
                 close (ifd);
                 return;
@@ -1493,7 +1493,7 @@ get_method (int in, bool first)
     if (memcmp(magic, GZIP_MAGIC, 2) == 0
         || memcmp(magic, OLD_GZIP_MAGIC, 2) == 0) {
 
-        method = (int)get_byte();
+        method = get_byte();
         if (method != DEFLATED) {
             fprintf(stderr,
                     "%s: %s: unknown method %d -- not supported\n",
@@ -1717,8 +1717,8 @@ do_list (int method)
             putstring ("                            ");
         }
         if (verbose || !quiet)
-          printf ("%*jd %*jd ", positive_off_t_width, (intmax_t) total_in,
-                  positive_off_t_width, (intmax_t) total_out);
+          printf ("%*jd %*jd ", positive_off_t_width, (intmax_t) {total_in},
+                  positive_off_t_width, (intmax_t) {total_out});
         display_ratio(total_out-(total_in-header_bytes), total_out, stdout);
         /* header_bytes is not meaningful but used to ensure the same
          * ratio if there is a single file.
@@ -1745,8 +1745,8 @@ do_list (int method)
         else
           printf ("??? ?? ??:?? ");
       }
-    printf ("%*jd %*jd ", positive_off_t_width, (intmax_t) bytes_in,
-            positive_off_t_width, (intmax_t) bytes_out);
+    printf ("%*jd %*jd ", positive_off_t_width, (intmax_t) {bytes_in},
+            positive_off_t_width, (intmax_t) {bytes_out});
     if (bytes_in  == -1L) {
         total_in = -1L;
         bytes_in = bytes_out = header_bytes = 0;
