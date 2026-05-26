@@ -69,7 +69,7 @@ do
          '') file1=$arg;;
          *) case $file2 in
             '') file2=$arg;;
-            *) printf >&2 '%s\n' "$0: extra operand '$arg'"; exit 2;;
+            *) printf >&2 '%s\n' "$0: extra operand"; exit 2;;
             esac;;
          esac;;
      *) cmp="$cmp $needop '"`printf '%sX\n' "$arg" | LC_ALL=C sed "$escape"`
@@ -109,7 +109,7 @@ case $file2 in
         eval "$cmp" - '"$FILE"' >&3
     );;
   *)
-    printf >&2 '%s\n' "$0: $file1: unknown compressed file extension"
+    printf >&2 '%s\n' "$0: unknown compressed file extension"
     exit 2;;
   esac;;
 *)

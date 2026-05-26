@@ -16,6 +16,8 @@
 /byteswap.h
 /byteswap.in.h
 /c++defs.h
+/c-ctype.c
+/c-ctype.h
 /calloc.c
 /chdir-long.c
 /chdir-long.h
@@ -122,6 +124,7 @@
 /malloc.c
 /malloca.c
 /malloca.h
+/mbszero.c
 /memchr.c
 /memchr.valgrind
 /memeq.c
@@ -147,6 +150,9 @@
 /pthread_sigmask.c
 /qsort.c
 /qsort_r.c
+/quote.h
+/quotearg.c
+/quotearg.h
 /raise.c
 /readdir.c
 /readlink.c

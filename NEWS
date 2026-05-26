@@ -8,6 +8,9 @@ GNU gzip NEWS                                    -*- outline -*-
   descriptors.  These can appear in well-formed streamed zip files.
   [bug present since the beginning]
 
+  gzip diagnostics now quote file names containing unusual characters.
+  [bug present since the beginning]
+
   A use of uninitialized memory on some malformed inputs has been fixed.
   [bug present since the beginning]
 

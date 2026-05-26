@@ -125,7 +125,8 @@ unlzw (int in, int out)
     block_mode = maxbits & BLOCK_MODE;
     if ((maxbits & LZW_RESERVED) != 0) {
         WARN((stderr, "\n%s: %s: warning, unknown flags 0x%x\n",
-              program_name, ifname, (unsigned int) maxbits & LZW_RESERVED));
+              program_name, quotef (ifname),
+              (unsigned int) maxbits & LZW_RESERVED));
     }
     maxbits &= BIT_MASK;
     maxmaxcode = MAXCODE(maxbits);
@@ -133,7 +134,7 @@ unlzw (int in, int out)
     if (maxbits > BITS) {
         fprintf(stderr,
                 "\n%s: %s: compressed with %d bits, can only handle %d bits\n",
-                program_name, ifname, maxbits, BITS);
+                program_name, quotef (ifname), maxbits, BITS);
         exit_code = ERROR;
         return ERROR;
     }

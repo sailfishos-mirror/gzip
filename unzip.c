@@ -139,7 +139,7 @@ check_zipfile (int in)
 
     if (bad)
       {
-        fprintf (stderr, "\n%s: %s: %s\n", program_name, ifname, bad);
+        fprintf (stderr, "\n%s: %s: %s\n", program_name, quotef (ifname), bad);
         exit_code = ERROR;
         return ERROR;
       }
@@ -240,7 +240,7 @@ unzip (int in, int out)
           {
             fprintf (stderr,
                      "\n%s: %s: invalid compressed data--crc/length error\n",
-                     program_name, ifname);
+                     program_name, quotef (ifname));
             err = ERROR;
           }
       }
@@ -264,14 +264,14 @@ unzip (int in, int out)
           {
             fprintf (stderr,
                      "\n%s: %s: invalid compressed data--crc error\n",
-                     program_name, ifname);
+                     program_name, quotef (ifname));
             err = ERROR;
           }
         if ((off_t) orig_len != len)
           {
             fprintf (stderr,
                      "\n%s: %s: invalid compressed data--length error\n",
-                     program_name, ifname);
+                     program_name, quotef (ifname));
             err = ERROR;
           }
     }
@@ -292,13 +292,13 @@ unzip (int in, int out)
             if (to_stdout)
               WARN ((stderr,
                      "%s: %s has more than one entry--rest ignored\n",
-                     program_name, ifname));
+                     program_name, quotef (ifname)));
             else
               {
                 /* Don't destroy the input zip file.  */
                 fprintf (stderr,
                          "%s: %s has more than one entry -- unchanged\n",
-                         program_name, ifname);
+                         program_name, quotef (ifname));
                 err = ERROR;
               }
           }

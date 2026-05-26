@@ -18,18 +18,21 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
-#include <ctype.h>
-#include <errno.h>
-#include <limits.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdlib.h>
 
-#include "crc.h"
 #include "tailor.h"
 #include "gzip.h"
+
+#include <c-ctype.h>
+#include <crc.h>
 #include <dirname.h>
+#include <quotearg.h>
 #include <xalloc.h>
+
+#include <errno.h>
+#include <fcntl.h>
+#include <limits.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #ifndef EPIPE
 # define EPIPE 0
@@ -233,7 +236,7 @@ strlwr (char *s)
 {
     char *t;
     for (t = s; *t; t++)
-      *t = tolower ((unsigned char) *t);
+      *t = c_tolower (*t);
     return s;
 }
 
@@ -364,7 +367,7 @@ char *add_envopt(
 void
 gzip_error (char const *m)
 {
-    fprintf (stderr, "\n%s: %s: %s\n", program_name, ifname, m);
+    fprintf (stderr, "\n%s: %s: %s\n", program_name, quotef (ifname), m);
     abort_gzip();
 }
 
@@ -377,13 +380,13 @@ xalloc_die ()
 
 void warning (char const *m)
 {
-    WARN ((stderr, "%s: %s: warning: %s\n", program_name, ifname, m));
+  WARN ((stderr, "%s: %s: warning: %s\n", program_name, quotef (ifname), m));
 }
 
 void read_error()
 {
     fprintf (stderr, "\n%s: %s: %s\n",
-             program_name, ifname,
+             program_name, quotef (ifname),
              errno ? strerror (errno) : "unexpected end of file");
     abort_gzip();
 }
@@ -393,7 +396,8 @@ write_err (int err)
 {
   int exitcode = err == EPIPE ? WARNING : ERROR;
   if (! (exitcode == WARNING && quiet))
-    fprintf (stderr, "\n%s: %s: %s\n", program_name, ofname, strerror (err));
+    fprintf (stderr, "\n%s: %s: %s\n", program_name, quotef (ofname),
+             strerror (err));
   finish_up_gzip (exitcode);
 }
 
@@ -413,4 +417,18 @@ display_ratio (off_t num, off_t den, FILE *file)
     fprintf (file, "%5.1f%%", 100.0 * num / den);
   else
     fputs (" -Inf%", file);
+}
+
+/* Quote file names.  */
+
+char *
+quotef (char const *arg)
+{
+  return quotef_n (0, arg);
+}
+
+char *
+quotef_n (int n, char const *arg)
+{
+  return quotearg_n_style_colon (n, shell_escape_quoting_style, arg);
 }

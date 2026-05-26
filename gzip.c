@@ -55,37 +55,36 @@ static char const license_msg[] =
  */
 
 #include <config.h>
-#include <ctype.h>
-#include <sys/types.h>
+
+#include "tailor.h"
+
+#include "gzip.h"
+#include "lzw.h"
+#include "revision.h"
+#include "version.h"
+
+#include <c-ctype.h>
+#include <dirname.h>
+#include <fcntl--.h>
+#include <filename.h>
+#include <ignore-value.h>
+#include <intprops.h>
+#include <stat-time.h>
+#include <timespec.h>
+#include <xalloc.h>
+#include <yesno.h>
+
+#include <errno.h>
+#include <getopt.h>
+#include <inttypes.h>
+#include <limits.h>
 #include <signal.h>
 #include <stdcountof.h>
 #include <stddef.h>
-#include <sys/stat.h>
-#include <getopt.h>
-#include <errno.h>
-
-#include "tailor.h"
-#include "gzip.h"
-#include "intprops.h"
-#include "lzw.h"
-#include "revision.h"
-#include "timespec.h"
-
-#include "dirname.h"
-#include "fcntl--.h"
-#include "filename.h"
-#include "ignore-value.h"
-#include "stat-time.h"
-#include "version.h"
-#include "xalloc.h"
-#include "yesno.h"
-
-                /* configuration */
-
-#include <limits.h>
-#include <inttypes.h>
-#include <unistd.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #ifndef NO_DIR
 # define NO_DIR 0
@@ -408,7 +407,8 @@ version ()
 static void
 progerror (char const *string)
 {
-    fprintf (stderr, "%s: %s: %s\n", program_name, string, strerror (errno));
+    fprintf (stderr, "%s: %s: %s\n", program_name,
+             string ? quotef (string) : "standard input", strerror (errno));
     exit_code = ERROR;
 }
 
@@ -597,7 +597,8 @@ int main (int argc, char **argv)
     }
 #endif
     if (z_len == 0 || z_len > MAX_SUFFIX) {
-        fprintf(stderr, "%s: invalid suffix '%s'\n", program_name, z_suffix);
+        fprintf (stderr, "%s: %s: invalid suffix\n", program_name,
+                 quotef (z_suffix));
         do_exit(ERROR);
     }
 
@@ -731,7 +732,7 @@ treat_stdin ()
     /* Get the file's timestamp and size.  */
     if (fstat (STDIN_FILENO, &istat) != 0)
       {
-        progerror ("standard input");
+        progerror (NULL);
         do_exit (ERROR);
       }
 
@@ -857,7 +858,7 @@ treat_file (char *iname)
 #endif
         close (ifd);
         WARN ((stderr, "%s: %s is a directory -- ignored\n",
-               program_name, ifname));
+               program_name, quotef (ifname)));
         return;
     }
 
@@ -867,21 +868,21 @@ treat_file (char *iname)
           {
             WARN ((stderr,
                    "%s: %s is not a directory or a regular file - ignored\n",
-                   program_name, ifname));
+                   program_name, quotef (ifname)));
             close (ifd);
             return;
           }
         if (istat.st_mode & S_ISUID)
           {
             WARN ((stderr, "%s: %s is set-user-ID on execution - ignored\n",
-                   program_name, ifname));
+                   program_name, quotef (ifname)));
             close (ifd);
             return;
           }
         if (istat.st_mode & S_ISGID)
           {
             WARN ((stderr, "%s: %s is set-group-ID on execution - ignored\n",
-                   program_name, ifname));
+                   program_name, quotef (ifname)));
             close (ifd);
             return;
           }
@@ -892,14 +893,14 @@ treat_file (char *iname)
               {
                 WARN ((stderr,
                        "%s: %s has the sticky bit set - file ignored\n",
-                       program_name, ifname));
+                       program_name, quotef (ifname)));
                 close (ifd);
                 return;
               }
             if (2 <= istat.st_nlink)
               {
                 WARN ((stderr, "%s: %s has %ju other link%s -- file ignored\n",
-                       program_name, ifname,
+                       program_name, quotef (ifname),
                        (uintmax_t) {istat.st_nlink - 1},
                        istat.st_nlink == 2 ? "" : "s"));
                 close (ifd);
@@ -944,14 +945,14 @@ treat_file (char *iname)
 
         if (!decompress && save_orig_name && !verbose && !quiet) {
             fprintf(stderr, "%s: %s compressed to %s\n",
-                    program_name, ifname, ofname);
+                    program_name, quotef_n (0, ifname), quotef_n (1, ofname));
         }
     }
     /* Keep the name even if not truncated except with --no-name: */
     if (!save_orig_name) save_orig_name = !no_name;
 
     if (verbose && !list) {
-        fprintf(stderr, "%s:\t", ifname);
+      fprintf (stderr, "%s:\t", quotef (ifname));
     }
 
     /* Actually do the compression/decompression. Loop over zipped members.
@@ -1003,7 +1004,7 @@ treat_file (char *iname)
             sigprocmask (SIG_SETMASK, &oldset, NULL);
 
             if (unlink_errno)
-              WARN ((stderr, "%s: %s: %s\n", program_name, ifname,
+              WARN ((stderr, "%s: %s: %s\n", program_name, quotef (ifname),
                      strerror (unlink_errno)));
           }
       }
@@ -1025,7 +1026,7 @@ treat_file (char *iname)
         }
         if (!test)
           fprintf(stderr, " -- %s %s", keep ? "created" : "replaced with",
-                  ofname);
+                  quotef (ofname));
         eputstring ("\n");
     }
 }
@@ -1114,7 +1115,7 @@ create_outfile ()
     {
       /* name might be too long if an original name was saved */
       WARN ((stderr, "%s: %s: warning, name truncated\n",
-             program_name, ofname));
+             program_name, quotef (ofname)));
     }
 
   return OK;
@@ -1333,7 +1334,8 @@ open_input_file (char *iname, struct stat *sbuf)
     return -1;
 
  name_too_long:
-    fprintf (stderr, "%s: %s: file name too long\n", program_name, iname);
+    fprintf (stderr, "%s: %s: file name too long\n", program_name,
+             quotef (iname));
     exit_code = ERROR;
     return -1;
 }
@@ -1362,7 +1364,7 @@ make_ofname ()
             /* Avoid annoying messages with -r */
             if (verbose || (!recursive && !quiet)) {
                 WARN((stderr,"%s: %s: unknown suffix -- ignored\n",
-                      program_name, ifname));
+                      program_name, quotef (ifname)));
             }
             return WARNING;
         }
@@ -1380,7 +1382,7 @@ make_ofname ()
         if (verbose || (!recursive && !quiet)) {
             /* Don't use WARN, as it affects exit status.  */
             fprintf (stderr, "%s: %s already has %s suffix -- unchanged\n",
-                     program_name, ifname, suff);
+                     program_name, quotef_n (0, ifname), quotef_n (1, suff));
         }
         return WARNING;
     } else {
@@ -1417,7 +1419,8 @@ make_ofname ()
     return OK;
 
  name_too_long:
-    WARN ((stderr, "%s: %s: file name too long\n", program_name, ifname));
+    WARN ((stderr, "%s: %s: file name too long\n", program_name,
+           quotef (ifname)));
     return WARNING;
 }
 
@@ -1497,7 +1500,7 @@ get_method (int in, bool first)
         if (method != DEFLATED) {
             fprintf(stderr,
                     "%s: %s: unknown method %d -- not supported\n",
-                    program_name, ifname, method);
+                    program_name, quotef (ifname), method);
             exit_code = ERROR;
             return -1;
         }
@@ -1507,14 +1510,14 @@ get_method (int in, bool first)
         if ((flags & ENCRYPTED) != 0) {
             fprintf(stderr,
                     "%s: %s is encrypted -- not supported\n",
-                    program_name, ifname);
+                    program_name, quotef (ifname));
             exit_code = ERROR;
             return -1;
         }
         if ((flags & RESERVED) != 0) {
             fprintf(stderr,
                     "%s: %s has flags 0x%x -- not supported\n",
-                    program_name, ifname, flags);
+                    program_name, quotef (ifname), flags);
             exit_code = ERROR;
             if (force <= 1) return -1;
         }
@@ -1533,7 +1536,7 @@ get_method (int in, bool first)
               {
                 WARN ((stderr,
                        "%s: %s: MTIME %lu out of range for this platform\n",
-                       program_name, ifname, stamp));
+                       program_name, quotef (ifname), stamp));
                 time_stamp.tv_sec = TYPE_MAXIMUM (time_t);
                 time_stamp.tv_nsec = TIMESPEC_RESOLUTION - 1;
               }
@@ -1560,7 +1563,7 @@ get_method (int in, bool first)
             len |= (lenbuf[1] = get_byte ()) << 8;
             if (verbose) {
                 fprintf(stderr,"%s: %s: extra field of %u bytes ignored\n",
-                        program_name, ifname, len);
+                        program_name, quotef (ifname), len);
             }
             if (flags & HEADER_CRC)
               updcrc (lenbuf, 2);
@@ -1609,7 +1612,7 @@ get_method (int in, bool first)
               {
                 fprintf (stderr,
                          "%s: %s: header checksum 0x%04x != computed checksum 0x%04x\n",
-                         program_name, ifname, header16, crc16);
+                         program_name, quotef (ifname), header16, crc16);
                 exit_code = ERROR;
                 if (force <= 1)
                   return -1;
@@ -1658,7 +1661,7 @@ get_method (int in, bool first)
 
     if (part_nb == 1) {
         fprintf (stderr, "\n%s: %s: not in gzip format\n",
-                 program_name, ifname);
+                 program_name, quotef (ifname));
         exit_code = ERROR;
         return -1;
     } else {
@@ -1671,13 +1674,13 @@ get_method (int in, bool first)
               {
                 if (verbose)
                   WARN ((stderr, "\n%s: %s: decompression OK, trailing zero bytes ignored\n",
-                         program_name, ifname));
+                         program_name, quotef (ifname)));
                 return -3;
               }
           }
 
         WARN((stderr, "\n%s: %s: decompression OK, trailing garbage ignored\n",
-              program_name, ifname));
+              program_name, quotef (ifname)));
         return -2;
     }
 }
@@ -1760,7 +1763,7 @@ do_list (int method)
         total_out += bytes_out;
     }
     display_ratio(bytes_out-(bytes_in-header_bytes), bytes_out, stdout);
-    printf(" %s\n", ofname);
+    printf (" %s\n", quotef (ofname));
 }
 
 /* ========================================================================
@@ -1836,7 +1839,8 @@ check_ofname ()
     /* Ask permission to overwrite the existing file */
     if (!force) {
         int ok = 0;
-        fprintf (stderr, "%s: %s already exists;", program_name, ofname);
+        fprintf (stderr, "%s: %s already exists;",
+                 program_name, quotef (ofname));
         if (foreground && (presume_input_tty || isatty (STDIN_FILENO))) {
             eputstring (" do you wish to overwrite (y or n)? ");
             fflush(stderr);
@@ -1898,11 +1902,12 @@ copy_stat (struct stat *ifstat)
     if (fdutimens (ofd, ofname, timespec) == 0)
       {
         if (restoring && 1 < verbose) {
-            fprintf(stderr, "%s: timestamp restored\n", ofname);
+          fprintf (stderr, "%s: timestamp restored\n", quotef (ofname));
         }
       }
     else
-      WARN ((stderr, "%s: %s: %s\n", program_name, ofname, strerror (errno)));
+      WARN ((stderr, "%s: %s: %s\n", program_name, quotef (ofname),
+             strerror (errno)));
 #endif
 
     /* Change the group first, then the permissions, then the owner.
@@ -1919,7 +1924,8 @@ copy_stat (struct stat *ifstat)
     r = chmod (ofname, mode);
 #endif
     if (r != 0)
-      WARN ((stderr, "%s: %s: %s\n", program_name, ofname, strerror (errno)));
+      WARN ((stderr, "%s: %s: %s\n", program_name, quotef (ofname),
+             strerror (errno)));
 
     do_chown (ofd, ofname, ifstat->st_uid, -1);
 }
@@ -1967,7 +1973,7 @@ treat_dir (int fd, char *dir)
             treat_file(nbuf);
         } else {
             fprintf(stderr,"%s: %s/%s: pathname too long\n",
-                    program_name, dir, entry);
+                    program_name, quotef_n (0, dir), quotef_n (1, entry));
             exit_code = ERROR;
         }
     }

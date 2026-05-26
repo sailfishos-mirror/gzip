@@ -30,6 +30,9 @@ AM_INIT_AUTOMAKE([1.11 subdir-objects dist-xz dist-zip
                   color-tests parallel-tests])
 AM_SILENT_RULES([yes]) # make --enable-silent-rules the default.
 
+dnl gzip does not use setlocale.
+AC_DEFINE([USE_C_LOCALE], [1], [Define to 1 if only the C locale is used.])
+
 dnl POSIXCHECK is worthwhile for maintainers, but adds several seconds
 dnl (more than 10% execution time) to ./configure, with no benefit for
 dnl most users.  Using it to look for bugs requires:

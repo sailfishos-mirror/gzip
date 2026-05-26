@@ -320,6 +320,8 @@ _Noreturn extern void read_error (void);
 _Noreturn extern void write_err (int err);
 _Noreturn extern void write_error (void);
 extern void display_ratio (off_t num, off_t den, FILE *file);
+extern char *quotef (char const *arg);
+extern char *quotef_n (int n, char const *arg);
 
         /* in inflate.c */
 extern int gzip_inflate (void);

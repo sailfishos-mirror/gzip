@@ -17,7 +17,6 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
-#include <ctype.h>
 
 #include "tailor.h"
 #include "gzip.h"
@@ -102,7 +101,7 @@ zip (int in, int out)
    */
     if (ifile_size != -1L && bytes_in != ifile_size) {
         fprintf(stderr, "%s: %s: file size changed while zipping\n",
-                program_name, ifname);
+                program_name, quotef (ifname));
     }
 #endif
 

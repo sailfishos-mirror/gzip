@@ -66,12 +66,16 @@
 /lib-ignore.m4
 /limits-h.m4
 /locale-en.m4
+/locale-ja.m4
+/locale-zh.m4
 /lseek.m4
 /lstat.m4
 /malloc.m4
 /malloca.m4
 /manywarnings-c++.m4
 /manywarnings.m4
+/mbrtowc.m4
+/mbstate_t.m4
 /memchr.m4
 /memeq.m4
 /mempcpy.m4
@@ -96,6 +100,7 @@
 /pipe.m4
 /pthread_sigmask.m4
 /qsort_r.m4
+/quotearg.m4
 /raise.m4
 /readdir.m4
 /readlink.m4

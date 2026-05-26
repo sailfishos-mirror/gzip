@@ -66,10 +66,11 @@
  */
 
 #include <config.h>
-#include <ctype.h>
 
 #include "tailor.h"
 #include "gzip.h"
+
+#include <c-ctype.h>
 
 /* ===========================================================================
  * Constants
@@ -607,7 +608,8 @@ gen_codes (ct_data near *tree, int max_code)
         tree[n].Code = bi_reverse(next_code[len]++, len);
 
         Tracec(tree != static_ltree, (stderr,"\nn %3d %c l %2d c %4x (%x) ",
-             n, (isgraph(n) ? n : ' '), len, tree[n].Code, next_code[len]-1u));
+                                      n, c_isgraph (n) ? n : ' ', len,
+                                      tree[n].Code, next_code[len] - 1u));
     }
 }
 
@@ -1047,7 +1049,7 @@ compress_block (ct_data near *ltree, ct_data near *dtree)
         lc = l_buf[lx++];
         if ((flag & 1) == 0) {
             send_code(lc, ltree); /* send a literal byte */
-            Tracecv(isgraph(lc), (stderr," '%c' ", lc));
+            Tracecv (c_isgraph (lc), (stderr," '%c' ", lc));
         } else {
             /* Here, lc is the match length - MIN_MATCH */
             code = length_code[lc];

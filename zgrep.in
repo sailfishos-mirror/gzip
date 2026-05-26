@@ -110,7 +110,7 @@ while test $# -ne 0; do
 
   case $option in
   (-[drRzZ] | --di* | --exc* | --inc* | --rec* | --nu*)
-    printf >&2 '%s: %s: option not supported\n' "$0" "$option"
+    printf >&2 '%s: option not supported\n' "$0"
     exit 2;;
   (-e* | --reg*)
     have_pat=1;;
