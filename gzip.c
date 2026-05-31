@@ -77,6 +77,7 @@ static char const license_msg[] =
 #include <getopt.h>
 #include <inttypes.h>
 #include <limits.h>
+#include <locale.h>
 #include <signal.h>
 #include <stdcountof.h>
 #include <stddef.h>
@@ -419,6 +420,8 @@ int main (int argc, char **argv)
     char **argv_copy;
     int env_argc;
     char **env_argv;
+
+    setlocale (LC_ALL, "");
 
     EXPAND(argc, argv); /* wild card expansion if necessary */
 

@@ -29,12 +29,25 @@ GNU gzip NEWS                                    -*- outline -*-
 
 ** Changes in behavior
 
+  gzip no longer insists on the "C" locale; instead, it follows the
+  typical practice of using the locale specified by the environment.
+  This change, which is needed for file name quoting, can affect the
+  format of floating-point numbers output by gzip's -l and -v options.
+  Diagnostics are still in English, though.
+
   gzip -l now reports "-Inf%" instead of "0.0%" for the infinite
   compression ratio of an empty file.
 
   znew's -P option is now ignored, with a warning.  It was present
   only to improve performance, and its implementation had too many
   bugs to be worth supporting.
+
+** Platforms no longer supported
+
+  The following platforms (or earlier) are no longer supported because
+  their old multibyte libraries do not work well enough: FreeBSD 4.11
+  (2005), HP-UX 11.00 (1997), Minix 3.1.8 (2010), MS-Windows 8.1
+  (2013) via mingw without UCRT.
 
 
 * Noteworthy changes in release 1.14 (2025-04-09) [stable]
