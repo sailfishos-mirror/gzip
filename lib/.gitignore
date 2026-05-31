@@ -124,7 +124,6 @@
 /malloc.c
 /malloca.c
 /malloca.h
-/mbszero.c
 /memchr.c
 /memchr.valgrind
 /memeq.c
@@ -230,8 +229,6 @@
 /utimens.h
 /verify.h
 /warn-on-use.h
-/wchar.h
-/wchar.in.h
 /xalloc-die.c
 /xalloc-oversized.h
 /xalloc.h

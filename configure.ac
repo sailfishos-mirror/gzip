@@ -34,6 +34,11 @@ dnl gzip avoids uchar-h.
 AC_DEFINE([_QUOTEARG_AVOID_UCHAR_H], [1],
   [Define to 1 for quotearg to not use <uchar.h>.])
 
+dnl gzip does not care about bugs detected by these macros.
+AC_DEFUN([gt_LOCALE_EN_UTF8])
+AC_DEFUN([gt_TYPE_WINT_T])
+GNULIBHEADERS_OVERRIDE_WINT_T=0
+
 dnl POSIXCHECK is worthwhile for maintainers, but adds several seconds
 dnl (more than 10% execution time) to ./configure, with no benefit for
 dnl most users.  Using it to look for bugs requires:
