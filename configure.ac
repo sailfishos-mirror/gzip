@@ -38,6 +38,7 @@ dnl gzip does not care about bugs detected by these macros.
 AC_DEFUN([gt_LOCALE_EN_UTF8])
 AC_DEFUN([gt_TYPE_WINT_T])
 GNULIBHEADERS_OVERRIDE_WINT_T=0
+AC_SUBST([GNULIBHEADERS_OVERRIDE_WINT_T])
 
 dnl POSIXCHECK is worthwhile for maintainers, but adds several seconds
 dnl (more than 10% execution time) to ./configure, with no benefit for
