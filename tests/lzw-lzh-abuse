@@ -1,0 +1,63 @@
+#!/bin/sh
+# Before gzip-1.15, decompressing an LZH (.lzh, SCO 'compress -H') file after
+# an LZW (.Z) file in the same gzip process would let stale LZW state leak
+# into the LZH decoder, silently producing erroneous output or a buffer
+# overflow.  Demonstrate the former malfunction.
+
+# Copyright (C) 2026 Free Software Foundation, Inc.
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+. "${srcdir=.}/init.sh"; path_prepend_ ..
+
+# An LZW (.Z) file to populate the shared arrays.  It need only leave
+# something nonzero in tab_prefix[257..511] -- the memory unlzh reuses as
+# left[257..511] -- covering node 511, where the LZH file's walk starts.
+#
+# This started as a checked-in 615-byte .Z, then shrank to the output of
+# "perl -e 'print map chr, 0..255' | compress", which was still bulky to
+# inline, and opaque. Then, perhaps going overboard, I realized I could use
+# 256 open-coded 9-bit 'a's, eight to a nine-byte unit ("compress" would
+# never emit that, of course), making this nicely compressible in a
+# different way:
+z='\x61\xc2\x84\x09\x13\x26\x4c\x98\x30'
+z=$z$z$z$z
+z=$z$z$z$z
+hex_printf_ "\x1f\x9d\x90$z$z" > poison.Z || framework_failure_
+
+# A minimal triggering LZH file: fill its code table with a symbol >= NC,
+# so decode_c walks left[]/right[] to decode the very first code.
+# With cleared arrays this decodes to a single NUL byte; with stale
+# arrays from this preceding LZW file, we'd get 0x61.
+hex_printf_ '\x1f\xa0\x00\x01\x00\x00\x1f\xf0\x00\x00\x00' > in.lzh \
+  || framework_failure_
+
+# After the 2-byte magic the bit fields are (see read_c_len, decode_c):
+#   bits  0-15  blocksize            = 1
+#   bits 16-25  read_pt_len(TBIT=5)  n = 0, fill symbol = 0
+#   bits 26-43  read_c_len(CBIT=9)   n = 0, c_table fill = 511  <-- >= NC
+#   bits 44-51  read_pt_len(PBIT=4)  n = 0, fill symbol = 0
+# The key is that value of 511 (normally 0).
+
+fail=0
+
+# The LZH file must decode the same with or without a preceding poison.Z.
+gzip -dc poison.Z > z_out || fail=1
+gzip -dc in.lzh > lzh_alone || fail=1
+gzip -dc poison.Z in.lzh > combined || fail=1
+
+cat z_out lzh_alone > exp || framework_failure_
+compare exp combined || fail=1
+
+Exit $fail
