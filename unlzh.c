@@ -313,6 +313,13 @@ huf_decode_start ()
     memzero (left, (2 * NC - 1) * sizeof *left);
     memzero (right, (2 * NC - 1) * sizeof *right);
 
+    /* Also needed in case C_TABLE is reused from a previous LZH
+       decompression.  If a member's code lengths are all zero,
+       make_table stores no symbol in C_TABLE and skips its own
+       clearing loop, so decode_c would use the previous member's
+       table.  */
+    memzero (c_table, 4096 * sizeof *c_table);
+
     init_getbits();  blocksize = 0;
 }
 
