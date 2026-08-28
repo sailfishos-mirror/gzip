@@ -1,0 +1,42 @@
+#!/bin/sh
+# Before gzip-1.15, decompressing an LZH (.lzh, SCO 'compress -H') file after
+# another LZH file in the same gzip process would let the first file's decoding
+# tables leak into the second.
+
+# Copyright (C) 2026 Free Software Foundation, Inc.
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+. "${srcdir=.}/init.sh"; path_prepend_ ..
+
+# This first file fills the gzip-internal c_table.
+hex_printf_ '\x1f\xa0\x00\x01\x51\x4c\x97\x77\xbe\xf8\x06\xee\x00\x00\x00\x00' \
+  > a.lzh || framework_failure_
+
+# This file should decode to a single NUL byte.
+# Before the fix, it'd use a stale c_table value and decode to \x01.
+hex_printf_ '\x1f\xa0\x00\x01\x04\xc8\x00\x00\x00\x00' \
+  > b.lzh || framework_failure_
+
+fail=0
+
+# Each file must decode the same, regardless of context.
+gzip -dc a.lzh > a || fail=1
+gzip -dc b.lzh > b || fail=1
+gzip -dc a.lzh b.lzh > combined || fail=1
+
+cat a b > exp || framework_failure_
+compare exp combined || fail=1
+
+Exit $fail
