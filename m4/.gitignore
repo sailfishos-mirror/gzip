@@ -149,3 +149,5 @@
 /xalloc.m4
 /yesno.m4
 /zzgnulib.m4
+/locale-en.m4
+/wint_t.m4
