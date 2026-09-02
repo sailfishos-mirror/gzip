@@ -39,7 +39,11 @@ do
   if touch -t $time in; then
     ls_l=$(ls -l in)
     case $ls_l in
-      *"$date"*) returns_ 2 gzip in || fail=1;;
+      *"$date"*)
+        # Warnings are exit status 2.  Exit status 1 can occur
+        # if 'touch' supports 64-bit time_t but
+        # gzip was compiled with 32-bit time_t.
+        gzip in && fail=1;;
     esac
   fi
   rm -f in.gz in
@@ -60,7 +64,12 @@ do
   if touch -t $time in; then
     ls_l=$(ls -l in)
     case $ls_l in
-      *"$date"*) gzip in || fail=1;;
+      *"$date"*)
+        gzip in
+        # Warnings are exit status 2.  Exit status 1 can occur
+        # if 'touch' supports 64-bit time_t but
+        # gzip was compiled with 32-bit time_t.
+        test $? -eq 2 && fail=1;;
     esac
   fi
   rm -f in.gz in
