@@ -261,12 +261,15 @@ AC_CACHE_CHECK([for an assembler syntax supported by this package],
   [gzip_cv_assembler=no
    AS_CASE([$DEFS],
      [*NO_ASM*], [],
-     [# 'host_os?' ensures Gnulib sets host_os as usual.
-      AS_CASE([${host_os?}],
-        [*-musl* | midipix*],
+     [# 'host?' ensures Gnulib sets host as usual.
+      AS_CASE([${host?}],
+        [*-musl* | *-midipix*],
           [# Avoid a crash in musl libc's startup code,
            # because musl doesn't support TEXTRELs.
            # https://www.openwall.com/lists/musl/2020/09/25/1
+          ],
+        [i386*-openbsd*],
+          [# Avoid issue in OpenBSD i386 <https://bugs.gnu.org/81766>.
           ],
         [if cp $srcdir/lib/match.c _match.S &&
             eval "$CPP $CPPFLAGS $ASCPPFLAGS _match.S > _match.i" &&
