@@ -215,7 +215,8 @@ static char dfname[MAX_PATH_LEN]; /* name of dir containing output file */
 static struct stat istat;         /* status for input file */
 int  ifd;                  /* input file descriptor */
 int  ofd;                  /* output file descriptor */
-static int dfd = -1;       /* output directory file descriptor */
+static int dfd = AT_FDCWD; /* output directory file descriptor */
+static int syncdfd = -1;   /* likewise, but for --synchronous */
 unsigned insize;           /* valid bytes in inbuf */
 unsigned inptr;            /* index of next byte to be processed in inbuf */
 unsigned outcnt;           /* bytes in output buffer */
@@ -804,7 +805,8 @@ atdir_eq (char const *dir, ptrdiff_t dirlen)
 /* Set the directory used for calls to openat etc. to be the directory
    DIR, with length DIRLEN.  DIR need not be null-terminated.
    DIRLEN must be less than MAX_PATH_LEN.  Return a file descriptor for
-   the directory, or -1 if one could not be obtained.  */
+   the directory, or AT_FDCWD if one could not be obtained or if it
+   is not needed.  */
 static int
 atdir_set (char const *dir, ptrdiff_t dirlen)
 {
@@ -818,13 +820,25 @@ atdir_set (char const *dir, ptrdiff_t dirlen)
 
   if (try_opening_directories && ! atdir_eq (dir, dirlen))
     {
-      if (0 <= dfd)
+      if (0 <= syncdfd)
+        close (syncdfd);
+      if (0 <= dfd && dfd != syncdfd)
         close (dfd);
       if (dirlen == 0)
         dir = &dot, dirlen = 1;
       memcpy (dfname, dir, dirlen);
       dfname[dirlen] = '\0';
-      dfd = open (dfname, O_SEARCH | O_DIRECTORY);
+      syncdfd = synchronous ? open (dfname, O_RDONLY | O_DIRECTORY) : -1;
+      #if defined O_PATH && O_SEARCH == O_RDONLY
+        enum { search_flag = O_PATH };
+      #else
+        enum { search_flag = O_SEARCH };
+      #endif
+      dfd = (!synchronous || (search_flag != O_RDONLY && syncdfd < 0)
+             ? open (dfname, search_flag | O_DIRECTORY)
+             : syncdfd);
+      if (dfd < 0)
+        dfd = AT_FDCWD;
     }
 
   return dfd;
@@ -986,9 +1000,11 @@ treat_file (char *iname)
         copy_stat (&istat);
 
         if ((synchronous
-             && ((0 <= dfd && fdatasync (dfd) != 0 && errno != EINVAL)
-                 || (fsync (ofd) != 0 && errno != EINVAL)))
-            || close (ofd) != 0)
+             && ((0 <= syncdfd && fdatasync (syncdfd) < 0
+                  && ((errno != EINVAL && errno != EBADF)
+                      || (fsync (syncdfd) < 0 && errno != EINVAL)))
+                 || (fsync (ofd) < 0 && errno != EINVAL)))
+            || close (ofd) < 0)
           write_error ();
 
         if (!keep)
