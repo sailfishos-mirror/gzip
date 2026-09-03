@@ -155,18 +155,8 @@ is_dfltcc_enabled (void)
 
   memset (facilities, 0, sizeof facilities);
   register char r0 __asm__ ("r0") = sizeof facilities / 8 - 1;
-  /* STFLE is supported since z9-109 and only in z/Architecture mode.  When
-   * compiling with -m31, gcc defaults to ESA mode, however, since the kernel
-   * is 64-bit, it's always z/Architecture mode at runtime.  */
-  __asm__ (
-#ifndef __clang__
-           ".machinemode push\n"
-           ".machinemode zarch\n"
-#endif
-           "stfle %[facilities]\n"
-#ifndef __clang__
-           ".machinemode pop\n"
-#endif
+  /* Using the raw opcode is more portable than the STFLE mnemonic. */
+  __asm__ (".insn s,0xb2b00000,%[facilities]\n" /* stfle */
            : [facilities] "=Q"(facilities), [r0] "+r"(r0) :: "cc");
   return is_bit_set (facilities, DFLTCC_FACILITY);
 }
