@@ -2098,21 +2098,22 @@ static void
 remove_output_file (bool signals_already_blocked)
 {
   int fd;
-  sigset_t oldset;
 
-  if (!signals_already_blocked)
-    sigprocmask (SIG_BLOCK, &caught_signals, &oldset);
   fd = remove_ofname_fd;
   if (0 <= fd)
     {
       char fname[MAX_PATH_LEN];
+      volatile_strcpy (fname, remove_ofname);
+      char *base = dfd < 0 ? fname : last_component (fname);
+      sigset_t oldset;
+      if (!signals_already_blocked)
+        sigprocmask (SIG_BLOCK, &caught_signals, &oldset);
       remove_ofname_fd = -1;
       close (fd);
-      volatile_strcpy (fname, remove_ofname);
-      xunlinkat (dfd, dfd < 0 ? fname : last_component (fname));
+      xunlinkat (dfd, base);
+      if (!signals_already_blocked)
+        sigprocmask (SIG_SETMASK, &oldset, NULL);
     }
-  if (!signals_already_blocked)
-    sigprocmask (SIG_SETMASK, &oldset, NULL);
 }
 
 /* ========================================================================
