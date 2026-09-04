@@ -218,9 +218,10 @@ struct timespec time_stamp;
 /* The set of signals that are caught.  */
 static sigset_t caught_signals;
 
-/* If nonnegative, close this file descriptor and unlink remove_ofname
-   on error.  */
+/* If remove_ofname_fd is nonnegative, close it and call
+   unlinkat (remove_ofname_dfd, remove_ofname, 0) on error.  */
 static int volatile remove_ofname_fd = -1;
+static int volatile remove_ofname_dfd = AT_FDCWD;
 static char volatile remove_ofname[MAX_PATH_LEN];
 
 static bool stdin_was_read;
@@ -838,7 +839,7 @@ atdir_eq (char const *dir, ptrdiff_t dirlen)
 static int
 atdir_set (char const *dir, ptrdiff_t dirlen)
 {
-  if (TRY_OPENING_DIRECTORIES && ! atdir_eq (dir, dirlen))
+  if (TRY_OPENING_DIRECTORIES && !to_stdout && !atdir_eq (dir, dirlen))
     {
       if (0 <= syncdfd)
         close (syncdfd);
@@ -1090,18 +1091,11 @@ create_outfile ()
   int flags = (O_WRONLY | O_CREAT | O_EXCL
                | (ascii && decompress ? 0 : O_BINARY));
   char const *base = ofname;
-  int atfd = AT_FDCWD;
 
-  if (!keep)
-    {
-      char const *b = last_component (ofname);
-      int f = atdir_set (ofname, b - ofname);
-      if (0 <= f)
-        {
-          base = b;
-          atfd = f;
-        }
-    }
+  char const *ofbase = last_component (ofname);
+  int atfd = atdir_set (ofname, ofbase - ofname);
+  if (0 <= atfd)
+    base = ofbase;
 
   if (!signal_handlers_installed)
     {
@@ -1114,7 +1108,8 @@ create_outfile ()
       int open_errno;
       sigset_t oldset;
 
-      volatile_strcpy (remove_ofname, ofname);
+      remove_ofname_dfd = atfd;
+      volatile_strcpy (remove_ofname, base);
 
       sigprocmask (SIG_BLOCK, &caught_signals, &oldset);
       remove_ofname_fd = ofd = openat (atfd, base, flags, S_IRUSR | S_IWUSR);
@@ -1228,7 +1223,6 @@ static int
 open_and_stat (char *name, int flags, struct stat *st)
 {
   int fd;
-  int atfd = AT_FDCWD;
   char const *base = name;
 
   /* Refuse to follow symbolic links unless -c or -f.  */
@@ -1250,16 +1244,10 @@ open_and_stat (char *name, int flags, struct stat *st)
         }
     }
 
-  if (!keep)
-    {
-      char const *b = last_component (name);
-      int f = atdir_set (name, b - name);
-      if (0 <= f)
-        {
-          base = b;
-          atfd = f;
-        }
-    }
+  char const *namebase = last_component (name);
+  int atfd = atdir_set (name, namebase - name);
+  if (0 <= atfd)
+    base = namebase;
 
   fd = openat (atfd, base, flags, 0);
   if (0 <= fd && fstat (fd, st) != 0)
@@ -2104,13 +2092,12 @@ remove_output_file (bool signals_already_blocked)
     {
       char fname[MAX_PATH_LEN];
       volatile_strcpy (fname, remove_ofname);
-      char *base = dfd < 0 ? fname : last_component (fname);
       sigset_t oldset;
       if (!signals_already_blocked)
         sigprocmask (SIG_BLOCK, &caught_signals, &oldset);
       remove_ofname_fd = -1;
       close (fd);
-      xunlinkat (dfd, base);
+      xunlinkat (remove_ofname_dfd, fname);
       if (!signals_already_blocked)
         sigprocmask (SIG_SETMASK, &oldset, NULL);
     }
