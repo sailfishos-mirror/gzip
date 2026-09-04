@@ -88,7 +88,7 @@ static char const license_msg[] =
 #include <unistd.h>
 
 #ifndef NO_DIR
-# define NO_DIR 0
+# define NO_DIR (!HAVE_FDOPENDIR && !HAVE_OPENDIR)
 #endif
 #if !NO_DIR
 # include <dirent.h>
@@ -1993,11 +1993,18 @@ treat_dir (int fd, char *dir)
     char const *entry;
     size_t entrylen;
 
+# if HAVE_FDOPENDIR
     dirp = fdopendir (fd);
+# else
+    close (fd);
+    dirp = opendir (dir);
+# endif
 
     if (dirp == NULL) {
         progerror(dir);
+# if HAVE_FDOPENDIR
         close (fd);
+# endif
         return ;
     }
 

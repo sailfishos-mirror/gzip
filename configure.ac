@@ -314,7 +314,8 @@ AM_CONDITIONAL([ZGREP_IS_TRANSFORMED],  [test "$ZGREP_TRANSFORMED" != zgrep])
 
 AC_C_CONST
 AC_CHECK_HEADERS_ONCE(fcntl.h limits.h memory.h time.h sys/sdt.h)
-AC_CHECK_FUNCS_ONCE([chown fchmod fchown lstat openat siginterrupt unlinkat])
+AC_CHECK_FUNCS_ONCE(
+  [chown fchmod fchown fdopendir lstat openat opendir siginterrupt unlinkat])
 AC_HEADER_DIRENT
 AC_TYPE_SIZE_T
 AC_TYPE_OFF_T
