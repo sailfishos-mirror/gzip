@@ -117,7 +117,7 @@ static char const license_msg[] =
 
 /* Don't bother opening directories on older systems that
    lack openat etc.  It's not worth the porting hassle.  */
-#if HAVE_OPENAT && HAVE_UNLINKAT
+#if HAVE_OPENAT && HAVE_UNLINKAT && !defined UNLINK_READONLY_BUG
 # define TRY_OPENING_DIRECTORIES true
 #else
 # define TRY_OPENING_DIRECTORIES false
@@ -130,17 +130,8 @@ gzip_openat (_GL_ATTRIBUTE_MAYBE_UNUSED int fd,
 {
   return open (file, flags, mode);
 }
-static int
-gzip_unlinkat (_GL_ATTRIBUTE_MAYBE_UNUSED int fd,
-               char const *file,
-               _GL_ATTRIBUTE_MAYBE_UNUSED int flags)
-{
-  return unlink (file);
-}
 # undef openat
 # define openat gzip_openat
-# undef unlinkat
-# define unlinkat gzip_unlinkat
 #endif
 
 /* Separator for file name parts (see shorten_name()) */
@@ -1041,12 +1032,12 @@ treat_file (char *iname)
             sigset_t oldset;
             int unlink_errno;
             char *ifbase = last_component (ifname);
-            int ufd = atdir_eq (ifname, ifbase - ifname) ? dfd : -1;
+            int ufd = atdir_eq (ifname, ifbase - ifname) ? dfd : AT_FDCWD;
             int res;
 
             sigprocmask (SIG_BLOCK, &caught_signals, &oldset);
             remove_ofname_fd = -1;
-            res = ufd < 0 ? xunlink (ifname) : unlinkat (ufd, ifbase, 0);
+            res = xunlinkat (ufd, ufd < 0 ? ifname : ifbase);
             unlink_errno = res == 0 ? 0 : errno;
             sigprocmask (SIG_SETMASK, &oldset, NULL);
 
@@ -1901,7 +1892,7 @@ check_ofname ()
             return ERROR;
         }
     }
-    if (xunlink (ofname)) {
+    if (xunlinkat (AT_FDCWD, ofname) < 0) {
         progerror(ofname);
         return ERROR;
     }
@@ -2121,7 +2112,7 @@ remove_output_file (bool signals_already_blocked)
       remove_ofname_fd = -1;
       close (fd);
       volatile_strcpy (fname, remove_ofname);
-      xunlink (fname);
+      xunlinkat (AT_FDCWD, fname);
     }
   if (!signals_already_blocked)
     sigprocmask (SIG_SETMASK, &oldset, NULL);

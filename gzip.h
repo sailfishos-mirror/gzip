@@ -310,7 +310,7 @@ extern void write_buf     (int fd, voidp buf, unsigned cnt);
 extern int read_buffer    (int fd, voidp buf, unsigned int cnt);
 extern char *strlwr       (char *s);
 extern char *gzip_base_name (char *fname) _GL_ATTRIBUTE_PURE;
-extern int xunlink        (char *fname);
+extern int xunlinkat (int fd, char const *name);
 extern void make_simple_name (char *name);
 extern char *add_envopt   (int *argcp, char ***argvp, char const *env);
 _Noreturn extern void gzip_error (char const *m);

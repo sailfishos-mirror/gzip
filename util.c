@@ -257,9 +257,13 @@ gzip_base_name (char *fname)
  * Unlink a file, working around the unlink readonly bug (if present).
  */
 int
-xunlink (char *filename)
+xunlinkat (_GL_ATTRIBUTE_MAYBE_UNUSED int fd, char const *filename)
 {
+#if HAVE_UNLINKAT
+  int r = unlinkat (fd, filename, 0);
+#else
   int r = unlink (filename);
+#endif
 
 #ifdef UNLINK_READONLY_BUG
   if (r != 0)
