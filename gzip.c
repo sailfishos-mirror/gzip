@@ -64,16 +64,17 @@ static char const license_msg[] =
 #include "version.h"
 
 #include <dirname.h>
-#include <fcntl--.h>
 #include <filename.h>
 #include <ignore-value.h>
 #include <intprops.h>
 #include <stat-time.h>
+#include <stdopen.h>
 #include <timespec.h>
 #include <xalloc.h>
 #include <yesno.h>
 
 #include <errno.h>
+#include <fcntl.h>
 #include <getopt.h>
 #include <inttypes.h>
 #include <limits.h>
@@ -616,6 +617,14 @@ int main (int argc, char **argv)
     ALLOC(ush, tab_prefix0, 1L<<(BITS-1));
     ALLOC(ush, tab_prefix1, 1L<<(BITS-1));
 #endif
+
+    int stdopen_err = stdopen ();
+    if (stdopen_err)
+      {
+        fprintf (stdout, "%s: standard file descriptors: %s\n",
+                 program_name, strerror (stdopen_err));
+        do_exit (ERROR);
+      }
 
     /* And get to work */
     if (file_count != 0) {
