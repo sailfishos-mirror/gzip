@@ -831,38 +831,57 @@ atdir_eq (char const *dir, ptrdiff_t dirlen)
   return memcmp (dfname, dir, dirlen) == 0 && !dfname[dirlen];
 }
 
+enum { ATDIR_SET_ERROR = -1 - (AT_FDCWD == -1) };
+
 /* Set the directory used for calls to openat etc. to be the directory
    DIR, with length DIRLEN.  DIR need not be null-terminated.
-   DIRLEN must be less than MAX_PATH_LEN.  Return a file descriptor for
-   the directory, or AT_FDCWD if one could not be obtained or if it
-   is not needed.  */
+   DIRLEN must be less than MAX_PATH_LEN.  Return AT_FDCWD if that
+   suffices, otherwise a file descriptor for the directory,
+   or ATDIR_SET_ERR if the fd could not be obtained.  */
 static int
 atdir_set (char const *dir, ptrdiff_t dirlen)
 {
-  if (TRY_OPENING_DIRECTORIES && !to_stdout && !atdir_eq (dir, dirlen))
+  if (!TRY_OPENING_DIRECTORIES || to_stdout || atdir_eq (dir, dirlen))
+    return dfd;
+
+  int new_dfd = 0;
+  if (dirlen == 0)
+    dir = &dot, dirlen = 1, new_dfd = AT_FDCWD;
+  char dirbuf[sizeof dfname];
+  memcpy (dirbuf, dir, dirlen);
+  dirbuf[dirlen] = '\0';
+
+  int new_syncdfd = synchronous ? open (dirbuf, O_RDONLY | O_DIRECTORY) : -1;
+  if (synchronous && new_syncdfd < 0)
+    return ATDIR_SET_ERROR;
+
+  if (!new_dfd)
     {
-      if (0 <= syncdfd)
-        close (syncdfd);
-      if (0 <= dfd && dfd != syncdfd)
-        close (dfd);
-      if (dirlen == 0)
-        dir = &dot, dirlen = 1;
-      memcpy (dfname, dir, dirlen);
-      dfname[dirlen] = '\0';
-      syncdfd = synchronous ? open (dfname, O_RDONLY | O_DIRECTORY) : -1;
-      #if defined O_PATH && O_SEARCH == O_RDONLY
-        enum { search_flag = O_PATH };
-      #else
-        enum { search_flag = O_SEARCH };
-      #endif
-      dfd = (!synchronous || (search_flag != O_RDONLY && syncdfd < 0)
-             ? open (dfname, search_flag | O_DIRECTORY)
-             : syncdfd);
-      if (dfd < 0)
-        dfd = AT_FDCWD;
+      if (0 <= new_syncdfd)
+        new_dfd = new_syncdfd;
+      else
+        {
+          #if defined O_PATH && O_SEARCH == O_RDONLY
+            enum { search_flag = O_PATH };
+          #else
+            enum { search_flag = O_SEARCH };
+          #endif
+          new_dfd = open (dirbuf, search_flag | O_DIRECTORY);
+          if (new_dfd < 0)
+            return ATDIR_SET_ERROR;
+        }
     }
 
-  return dfd;
+  if (0 <= syncdfd)
+    close (syncdfd);
+  if (0 <= dfd && dfd != syncdfd)
+    close (dfd);
+
+  memcpy (dfname, dirbuf, dirlen + 1);
+  syncdfd = new_syncdfd;
+  dfd = new_dfd;
+
+  return new_dfd;
 }
 
 /* ========================================================================
@@ -1096,6 +1115,12 @@ create_outfile ()
   int atfd = atdir_set (ofname, ofbase - ofname);
   if (0 <= atfd)
     base = ofbase;
+  else if (atfd == ATDIR_SET_ERROR)
+    {
+      fprintf(stderr, "%s: %.*s: %s\n", program_name,
+              (int) {ofbase - ofname}, ofname, strerror (errno));
+      return ERROR;
+    }
 
   if (!signal_handlers_installed)
     {
@@ -1248,6 +1273,8 @@ open_and_stat (char *name, int flags, struct stat *st)
   int atfd = atdir_set (name, namebase - name);
   if (0 <= atfd)
     base = namebase;
+  else if (atfd == ATDIR_SET_ERROR)
+    return -1;
 
   fd = openat (atfd, base, flags, 0);
   if (0 <= fd && fstat (fd, st) != 0)
