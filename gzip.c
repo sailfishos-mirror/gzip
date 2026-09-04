@@ -1031,14 +1031,11 @@ treat_file (char *iname)
           {
             sigset_t oldset;
             int unlink_errno;
-            char *ifbase = last_component (ifname);
-            int ufd = atdir_eq (ifname, ifbase - ifname) ? dfd : AT_FDCWD;
-            int res;
+            char *ifbase = dfd < 0 ? ifname : last_component (ifname);
 
             sigprocmask (SIG_BLOCK, &caught_signals, &oldset);
             remove_ofname_fd = -1;
-            res = xunlinkat (ufd, ufd < 0 ? ifname : ifbase);
-            unlink_errno = res == 0 ? 0 : errno;
+            unlink_errno = xunlinkat (dfd, ifbase) < 0 ? errno : 0;
             sigprocmask (SIG_SETMASK, &oldset, NULL);
 
             if (unlink_errno)
@@ -1892,7 +1889,7 @@ check_ofname ()
             return ERROR;
         }
     }
-    if (xunlinkat (AT_FDCWD, ofname) < 0) {
+    if (xunlinkat (dfd, dfd < 0 ? ofname : last_component (ofname)) < 0) {
         progerror(ofname);
         return ERROR;
     }
@@ -2112,7 +2109,7 @@ remove_output_file (bool signals_already_blocked)
       remove_ofname_fd = -1;
       close (fd);
       volatile_strcpy (fname, remove_ofname);
-      xunlinkat (AT_FDCWD, fname);
+      xunlinkat (dfd, dfd < 0 ? fname : last_component (fname));
     }
   if (!signals_already_blocked)
     sigprocmask (SIG_SETMASK, &oldset, NULL);
