@@ -318,16 +318,16 @@ static void license (void);
 static void version (void);
 static int input_eof (void);
 static void treat_stdin (void);
-static void treat_file (char *iname);
-static int create_outfile (void);
+static void treat_file (int parentfd, char *iname);
+static int create_outfile (int parentfd);
 static char *get_suffix (char *name);
-static int  open_input_file (char *iname, struct stat *sbuf);
+static int  open_input_file (int parentfd, char *iname, struct stat *sbuf);
 static void discard_input_bytes (size_t nbytes, unsigned int flags);
 static int  make_ofname (void);
 static void shorten_name (char *name);
 static int get_method (int in, bool first);
 static void do_list (int method);
-static int  check_ofname (void);
+static int  check_ofname (int atfd);
 static void copy_stat (struct stat *ifstat);
 static void install_signal_handlers (void);
 static void remove_output_file (bool);
@@ -652,7 +652,7 @@ int main (int argc, char **argv)
             SET_BINARY_MODE (STDOUT_FILENO);
         }
         while (optind < argc) {
-            treat_file(argv[optind++]);
+          treat_file(-1, argv[optind++]);
         }
     } else {  /* Standard input */
         treat_stdin();
@@ -888,7 +888,7 @@ atdir_set (char const *dir, ptrdiff_t dirlen)
  * Compress or decompress the given file
  */
 static void
-treat_file (char *iname)
+treat_file (int parentfd, char *iname)
 {
     /* Accept "-" as synonym for stdin */
     if (strequ(iname, "-")) {
@@ -899,7 +899,7 @@ treat_file (char *iname)
     }
 
     /* Check if the input file is present, set ifname and istat: */
-    ifd = open_input_file (iname, &istat);
+    ifd = open_input_file (parentfd, iname, &istat);
     if (ifd < 0)
       return;
 
@@ -997,7 +997,8 @@ treat_file (char *iname)
         ofd = STDOUT_FILENO;
         /* Keep remove_ofname_fd negative.  */
     } else {
-        if (create_outfile() != OK) return;
+        if (create_outfile (parentfd) != OK)
+          return;
 
         if (!decompress && save_orig_name && !verbose && !quiet) {
             fprintf(stderr, "%s: %s compressed to %s\n",
@@ -1039,10 +1040,12 @@ treat_file (char *iname)
       {
         copy_stat (&istat);
 
+        int sfd = parentfd < 0 ? syncdfd : parentfd;
+
         if ((synchronous
-             && ((0 <= syncdfd && fdatasync (syncdfd) < 0
+             && ((0 <= sfd && fdatasync (sfd) < 0
                   && ((errno != EINVAL && errno != EBADF)
-                      || (fsync (syncdfd) < 0 && errno != EINVAL)))
+                      || (fsync (sfd) < 0 && errno != EINVAL)))
                  || (fsync (ofd) < 0 && errno != EINVAL)))
             || close (ofd) < 0)
           write_error ();
@@ -1051,11 +1054,12 @@ treat_file (char *iname)
           {
             sigset_t oldset;
             int unlink_errno;
-            char *ifbase = dfd < 0 ? ifname : last_component (ifname);
+            int atfd = parentfd < 0 ? dfd : parentfd;
+            char *ifbase = atfd < 0 ? ifname : last_component (ifname);
 
             sigprocmask (SIG_BLOCK, &caught_signals, &oldset);
             remove_ofname_fd = -1;
-            unlink_errno = xunlinkat (dfd, ifbase) < 0 ? errno : 0;
+            unlink_errno = xunlinkat (atfd, ifbase) < 0 ? errno : 0;
             sigprocmask (SIG_SETMASK, &oldset, NULL);
 
             if (unlink_errno)
@@ -1103,7 +1107,7 @@ volatile_strcpy (char volatile *dst, char const volatile *src)
  * OUT assertions: ifd and ofd are closed in case of error.
  */
 static int
-create_outfile ()
+create_outfile (int parentfd)
 {
   static bool signal_handlers_installed;
   int name_shortened = 0;
@@ -1112,7 +1116,7 @@ create_outfile ()
   char const *base = ofname;
 
   char const *ofbase = last_component (ofname);
-  int atfd = atdir_set (ofname, ofbase - ofname);
+  int atfd = parentfd < 0 ? atdir_set (ofname, ofbase - ofname) : parentfd;
   if (0 <= atfd)
     base = ofbase;
   else if (atfd == ATDIR_SET_ERROR)
@@ -1154,7 +1158,7 @@ create_outfile ()
 #endif
 
         case EEXIST:
-          if (check_ofname () != OK)
+          if (check_ofname (atfd) != OK)
             {
               close (ifd);
               return ERROR;
@@ -1245,7 +1249,7 @@ get_suffix (char *name)
    into *ST.  Return a file descriptor to the newly opened file, or -1
    (setting errno) on failure.  */
 static int
-open_and_stat (char *name, int flags, struct stat *st)
+open_and_stat (int parentfd, char *name, int flags, struct stat *st)
 {
   int fd;
   char const *base = name;
@@ -1270,7 +1274,7 @@ open_and_stat (char *name, int flags, struct stat *st)
     }
 
   char const *namebase = last_component (name);
-  int atfd = atdir_set (name, namebase - name);
+  int atfd = parentfd < 0 ? atdir_set (name, namebase - name) : parentfd;
   if (0 <= atfd)
     base = namebase;
   else if (atfd == ATDIR_SET_ERROR)
@@ -1296,7 +1300,7 @@ open_and_stat (char *name, int flags, struct stat *st)
  * Return an open file descriptor or -1.
  */
 static int
-open_input_file (char *iname, struct stat *sbuf)
+open_input_file (int parentfd, char *iname, struct stat *sbuf)
 {
     int ilen;  /* strlen(ifname) */
     int z_suffix_errno = 0;
@@ -1318,7 +1322,7 @@ open_input_file (char *iname, struct stat *sbuf)
     strcpy(ifname, iname);
 
     /* If input file exists, return OK. */
-    fd = open_and_stat (ifname, open_flags, sbuf);
+    fd = open_and_stat (parentfd, ifname, open_flags, sbuf);
     if (0 <= fd)
       return fd;
 
@@ -1357,7 +1361,7 @@ open_input_file (char *iname, struct stat *sbuf)
         if (sizeof ifname <= ilen + strlen (s))
           goto name_too_long;
         strcat(ifname, s);
-        fd = open_and_stat (ifname, open_flags, sbuf);
+        fd = open_and_stat (parentfd, ifname, open_flags, sbuf);
         if (0 <= fd)
           return fd;
         if (errno != ENOENT)
@@ -1886,7 +1890,7 @@ shorten_name (char *name)
  * Return ERROR if the file must be skipped.
  */
 static int
-check_ofname ()
+check_ofname (int atfd)
 {
     /* Ask permission to overwrite the existing file */
     if (!force) {
@@ -1904,7 +1908,7 @@ check_ofname ()
             return ERROR;
         }
     }
-    if (xunlinkat (dfd, dfd < 0 ? ofname : last_component (ofname)) < 0) {
+    if (xunlinkat (atfd, atfd < 0 ? ofname : last_component (ofname)) < 0) {
         progerror(ofname);
         return ERROR;
     }
@@ -1999,27 +2003,22 @@ treat_dir (int fd, char *dir)
 # if HAVE_FDOPENDIR
     dirp = fdopendir (fd);
 # else
-    close (fd);
     dirp = opendir (dir);
 # endif
 
     if (dirp == NULL) {
         progerror(dir);
-# if HAVE_FDOPENDIR
         close (fd);
-# endif
         return ;
     }
 
     entries = streamsavedir (dirp, SAVEDIR_SORT_NONE);
-    if (! entries)
-      progerror (dir);
-    if (closedir (dirp) != 0)
-      progerror (dir);
-    if (! entries)
-      return;
 
-    for (entry = entries; *entry; entry += entrylen + 1) {
+    if (!entries)
+      progerror (dir);
+    else
+     {
+      for (entry = entries; *entry; entry += entrylen + 1) {
         size_t len = strlen (dir);
         entrylen = strlen (entry);
         if (strequ (entry, ".") || strequ (entry, ".."))
@@ -2029,14 +2028,21 @@ treat_dir (int fd, char *dir)
             if (*last_component (nbuf) && !ISSLASH (nbuf[len - 1]))
               nbuf[len++] = '/';
             strcpy (nbuf + len, entry);
-            treat_file(nbuf);
+            treat_file (fd, nbuf);
         } else {
             fprintf(stderr,"%s: %s/%s: pathname too long\n",
                     program_name, quotef_n (0, dir), quotef_n (1, entry));
             exit_code = ERROR;
         }
-    }
-    free (entries);
+      }
+      free (entries);
+     }
+    if (closedir (dirp) < 0)
+      progerror (dir);
+# if !HAVE_FDOPENDIR
+    if (close (fd) < 0)
+      progerror (dir);
+# endif
 }
 #endif /* ! NO_DIR */
 
