@@ -115,6 +115,34 @@ static char const license_msg[] =
 # define HAVE_WORKING_O_NOFOLLOW 0
 #endif
 
+/* Don't bother opening directories on older systems that
+   lack openat etc.  It's not worth the porting hassle.  */
+#if HAVE_OPENAT && HAVE_UNLINKAT
+# define TRY_OPENING_DIRECTORIES true
+#else
+# define TRY_OPENING_DIRECTORIES false
+#endif
+
+#if !TRY_OPENING_DIRECTORIES
+static int
+gzip_openat (_GL_ATTRIBUTE_MAYBE_UNUSED int fd,
+             char const *file, int flags, mode_t mode)
+{
+  return open (file, flags, mode);
+}
+static int
+gzip_unlinkat (_GL_ATTRIBUTE_MAYBE_UNUSED int fd,
+               char const *file,
+               _GL_ATTRIBUTE_MAYBE_UNUSED int flags)
+{
+  return unlink (file);
+}
+# undef openat
+# define openat gzip_openat
+# undef unlinkat
+# define unlinkat gzip_unlinkat
+#endif
+
 /* Separator for file name parts (see shorten_name()) */
 #ifdef NO_MULTIPLE_DOTS
 #  define PART_SEP "-"
@@ -819,15 +847,7 @@ atdir_eq (char const *dir, ptrdiff_t dirlen)
 static int
 atdir_set (char const *dir, ptrdiff_t dirlen)
 {
-  /* Don't bother opening directories on older systems that
-     lack openat and unlinkat.  It's not worth the porting hassle.  */
-  #if HAVE_OPENAT && HAVE_UNLINKAT
-    enum { try_opening_directories = true };
-  #else
-    enum { try_opening_directories = false };
-  #endif
-
-  if (try_opening_directories && ! atdir_eq (dir, dirlen))
+  if (TRY_OPENING_DIRECTORIES && ! atdir_eq (dir, dirlen))
     {
       if (0 <= syncdfd)
         close (syncdfd);
@@ -1253,7 +1273,7 @@ open_and_stat (char *name, int flags, struct stat *st)
         }
     }
 
-  fd = openat (atfd, base, flags);
+  fd = openat (atfd, base, flags, 0);
   if (0 <= fd && fstat (fd, st) != 0)
     {
       int e = errno;
