@@ -1572,7 +1572,9 @@ get_method (int in, bool first)
             discard_input_bytes (len, flags);
         }
 
-        /* Get original file name if it was truncated */
+        /* FIXME: It is not clear whether this code is doing the right thing.
+           Should it get the original file name if it was truncated?
+           Should it check save_orig_name?  */
         if ((flags & ORIG_NAME) != 0) {
             if (no_name || (to_stdout && !list) || part_nb > 1) {
                 /* Discard the old name */
