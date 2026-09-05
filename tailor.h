@@ -152,11 +152,6 @@
 #  define UNALIGNED_OK
 #endif
 
-#ifndef SIGPIPE
-# define SIGPIPE 0
-#endif
-
-
         /* Common defaults */
 
 #ifndef OS_CODE

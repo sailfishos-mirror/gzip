@@ -251,7 +251,7 @@ static int handled_sig[] =
 #ifdef SIGHUP
     , SIGHUP
 #endif
-#if SIGPIPE
+#ifdef SIGPIPE
     , SIGPIPE
 #endif
 #ifdef SIGTERM
