@@ -64,7 +64,6 @@ AC_CHECK_PROG([MORE], [more], [more])
 AM_CONDITIONAL([MORE], [test "$MORE"])
 AC_CHECK_TOOL([NM], [nm], [nm])
 AC_PROG_LN_S
-AC_PROG_RANLIB
 AC_PROG_SHELL
 
 gl_EARLY
@@ -312,12 +311,8 @@ AM_CONDITIONAL([GZIP_IS_TRANSFORMED],  [test "$GZIP_TRANSFORMED" != gzip])
 AM_CONDITIONAL([ZDIFF_IS_TRANSFORMED],  [test "$ZDIFF_TRANSFORMED" != zdiff])
 AM_CONDITIONAL([ZGREP_IS_TRANSFORMED],  [test "$ZGREP_TRANSFORMED" != zgrep])
 
-AC_C_CONST
-AC_CHECK_HEADERS_ONCE(fcntl.h limits.h memory.h time.h sys/sdt.h)
-AC_CHECK_FUNCS_ONCE(
-  [chown fchmod fchown fdopendir lstat openat opendir siginterrupt unlinkat])
-AC_HEADER_DIRENT
-AC_TYPE_SIZE_T
+AC_CHECK_HEADERS_ONCE([sys/sdt.h])
+AC_CHECK_FUNCS_ONCE([chown fchmod fchown fdopendir openat opendir unlinkat])
 AC_TYPE_OFF_T
 
 AC_CONFIG_FILES([Makefile doc/Makefile lib/Makefile tests/Makefile])
