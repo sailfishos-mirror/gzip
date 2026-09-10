@@ -115,15 +115,15 @@ static char const license_msg[] =
 # define HAVE_WORKING_O_NOFOLLOW 0
 #endif
 
-/* Don't bother opening directories on older systems that
-   lack openat etc.  It's not worth the porting hassle.  */
+/* Use openat+unlinkat only when they work, i.e., they conform to POSIX.1-2008
+   or later.  It's not worth the porting hassle otherwise.  */
 #if HAVE_OPENAT && HAVE_UNLINKAT && !defined UNLINK_READONLY_BUG
-# define TRY_OPENING_DIRECTORIES true
+# define USE_ATFUNCS true
 #else
-# define TRY_OPENING_DIRECTORIES false
+# define USE_ATFUNCS false
 #endif
 
-#if !TRY_OPENING_DIRECTORIES
+#if !USE_ATFUNCS
 static int
 gzip_openat (_GL_ATTRIBUTE_MAYBE_UNUSED int fd,
              char const *file, int flags, mode_t mode)
@@ -132,6 +132,29 @@ gzip_openat (_GL_ATTRIBUTE_MAYBE_UNUSED int fd,
 }
 # undef openat
 # define openat gzip_openat
+
+static int
+gzip_unlinkat (_GL_ATTRIBUTE_MAYBE_UNUSED int fd, char const *file, int flags)
+{
+  int r = unlink (file);
+
+# ifdef UNLINK_READONLY_BUG
+  if (r < 0)
+    {
+      int unlink_errno = errno;
+      if (chmod (file, S_IWUSR) < 0)
+        {
+          errno = unlink_errno;
+          return -1;
+        }
+      r = unlink (file);
+    }
+# endif
+
+  return r;
+}
+# undef unlinkat
+# define unlinkat gzip_unlinkat
 #endif
 
 /* Separator for file name parts (see shorten_name()) */
@@ -841,7 +864,7 @@ enum { ATDIR_SET_ERROR = -1 - (AT_FDCWD == -1) };
 static int
 atdir_set (char const *dir, ptrdiff_t dirlen)
 {
-  if (!TRY_OPENING_DIRECTORIES || to_stdout || atdir_eq (dir, dirlen))
+  if (!USE_ATFUNCS || to_stdout || atdir_eq (dir, dirlen))
     return dfd;
 
   int new_dfd = 0;
@@ -1059,7 +1082,7 @@ treat_file (int parentfd, char *iname)
 
             sigprocmask (SIG_BLOCK, &caught_signals, &oldset);
             remove_ofname_fd = -1;
-            unlink_errno = xunlinkat (atfd, ifbase) < 0 ? errno : 0;
+            unlink_errno = unlinkat (atfd, ifbase, 0) < 0 ? errno : 0;
             sigprocmask (SIG_SETMASK, &oldset, NULL);
 
             if (unlink_errno)
@@ -1908,7 +1931,7 @@ check_ofname (int atfd)
             return ERROR;
         }
     }
-    if (xunlinkat (atfd, atfd < 0 ? ofname : last_component (ofname)) < 0) {
+    if (unlinkat (atfd, atfd < 0 ? ofname : last_component (ofname), 0) < 0) {
         progerror(ofname);
         return ERROR;
     }
@@ -2130,7 +2153,7 @@ remove_output_file (bool signals_already_blocked)
         sigprocmask (SIG_BLOCK, &caught_signals, &oldset);
       remove_ofname_fd = -1;
       close (fd);
-      xunlinkat (remove_ofname_dfd, fname);
+      unlinkat (remove_ofname_dfd, fname, 0);
       if (!signals_already_blocked)
         sigprocmask (SIG_SETMASK, &oldset, NULL);
     }
