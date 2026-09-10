@@ -856,20 +856,23 @@ atdir_eq (char const *dir, ptrdiff_t dirlen)
 
 enum { ATDIR_SET_ERROR = -1 - (AT_FDCWD == -1) };
 
-/* Set the directory used for calls to openat etc. to be the directory
+/* Return the directory used for calls to openat etc., given the directory
+   with file descriptor PARENTFD (if PARENTFD is nonnegative) and with name
    DIR, with length DIRLEN.  DIR need not be null-terminated.
-   DIRLEN must be less than MAX_PATH_LEN.  Return AT_FDCWD if that
+   DIRLEN must be less than MAX_PATH_LEN.  Update the static variables
+   DFD and SYNCDFD as needed.  Return AT_FDCWD if that
    suffices, otherwise a file descriptor for the directory,
    or ATDIR_SET_ERR if the fd could not be obtained.  */
 static int
-atdir_set (char const *dir, ptrdiff_t dirlen)
+atdir_set (int parentfd, char const *dir, ptrdiff_t dirlen)
 {
-  if (!USE_ATFUNCS || to_stdout || atdir_eq (dir, dirlen))
+  if (to_stdout || atdir_eq (dir, dirlen))
     return dfd;
+  if (USE_ATFUNCS && 0 <= parentfd)
+    return parentfd;
 
-  int new_dfd = 0;
   if (dirlen == 0)
-    dir = &dot, dirlen = 1, new_dfd = AT_FDCWD;
+    dir = &dot, dirlen = 1;
   char dirbuf[sizeof dfname];
   memcpy (dirbuf, dir, dirlen);
   dirbuf[dirlen] = '\0';
@@ -878,21 +881,24 @@ atdir_set (char const *dir, ptrdiff_t dirlen)
   if (synchronous && new_syncdfd < 0)
     return ATDIR_SET_ERROR;
 
-  if (!new_dfd)
+  int new_dfd;
+  if (!USE_ATFUNCS)
+    new_dfd = AT_FDCWD;
+  else if (0 <= new_syncdfd)
+    new_dfd = new_syncdfd;
+  else if (dirbuf[0] == '.'
+           && (dirlen < 2 || (dirlen == 2 && ISSLASH (dirbuf[1]))))
+    new_dfd = AT_FDCWD;  /* Avoid an unnecessary open.  */
+  else
     {
-      if (0 <= new_syncdfd)
-        new_dfd = new_syncdfd;
-      else
-        {
-          #if defined O_PATH && O_SEARCH == O_RDONLY
-            enum { search_flag = O_PATH };
-          #else
-            enum { search_flag = O_SEARCH };
-          #endif
-          new_dfd = open (dirbuf, search_flag | O_DIRECTORY);
-          if (new_dfd < 0)
-            return ATDIR_SET_ERROR;
-        }
+      #if defined O_PATH && O_SEARCH == O_RDONLY
+        enum { search_flag = O_PATH };
+      #else
+        enum { search_flag = O_SEARCH };
+      #endif
+      new_dfd = open (dirbuf, search_flag | O_DIRECTORY);
+      if (new_dfd < 0)
+        return ATDIR_SET_ERROR;
     }
 
   if (0 <= syncdfd)
@@ -1077,7 +1083,7 @@ treat_file (int parentfd, char *iname)
           {
             sigset_t oldset;
             int unlink_errno;
-            int atfd = parentfd < 0 ? dfd : parentfd;
+            int atfd = !USE_ATFUNCS ? -1 : parentfd < 0 ? dfd : parentfd;
             char *ifbase = atfd < 0 ? ifname : last_component (ifname);
 
             sigprocmask (SIG_BLOCK, &caught_signals, &oldset);
@@ -1139,7 +1145,7 @@ create_outfile (int parentfd)
   char const *base = ofname;
 
   char const *ofbase = last_component (ofname);
-  int atfd = parentfd < 0 ? atdir_set (ofname, ofbase - ofname) : parentfd;
+  int atfd = atdir_set (parentfd, ofname, ofbase - ofname);
   if (0 <= atfd)
     base = ofbase;
   else if (atfd == ATDIR_SET_ERROR)
@@ -1297,7 +1303,7 @@ open_and_stat (int parentfd, char *name, int flags, struct stat *st)
     }
 
   char const *namebase = last_component (name);
-  int atfd = parentfd < 0 ? atdir_set (name, namebase - name) : parentfd;
+  int atfd = atdir_set (parentfd, name, namebase - name);
   if (0 <= atfd)
     base = namebase;
   else if (atfd == ATDIR_SET_ERROR)
